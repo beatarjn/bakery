@@ -17,7 +17,7 @@ public class BakeryApplication {
         ClientRepository clientRepository = new CsvBasedClientRepository(addressRepository);
 
         System.out.println("Client found: ");
-        System.out.println(clientRepository.findByName("Aam"));
+        System.out.println(clientRepository.findByName("Adam"));
 
 //        clientRepository.saveNewClient("Adam", "Test", new Address(5, 65));
 //        clientRepository.saveNewClient("Hanna", "Blue", new Address(1, 34));
