@@ -17,10 +17,10 @@ public class FileReader {
             while ((values = csvReader.readNext()) != null) {
                 fileData.add(List.of(values));
             }
-        } catch (FileNotFoundException e) {
-            System.out.println("File not found" + e.getMessage());
+        } catch (FileNotFoundException | NullPointerException e) {
+            System.out.println("File not found: " + e.getMessage());
         } catch (IOException | CsvValidationException e) {
-            System.out.println("CSV file exception" + e.getMessage());
+            System.out.println("CSV file exception: " + e.getMessage());
         }
         return fileData;
     }
