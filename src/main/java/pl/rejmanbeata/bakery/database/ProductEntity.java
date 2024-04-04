@@ -4,22 +4,24 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
-@Table(name = "address")
+@Table(name = "products")
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
-public class AddressEntity {
+public class ProductEntity {
 
     @Id
     @Column
-    private long id;
+    private Long id;
     @Column
-    private double longitude;
+    private String name;
     @Column
-    private double latitude;
-
+    private double price;
 }
