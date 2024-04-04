@@ -1,23 +1,21 @@
 package pl.rejmanbeata.bakery;
 
-import pl.rejmanbeata.bakery.repository.AddressRepository;
-import pl.rejmanbeata.bakery.repository.ClientRepository;
-import pl.rejmanbeata.bakery.repository.CsvBasedAddressRepository;
-import pl.rejmanbeata.bakery.repository.CsvBasedClientRepository;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-//@SpringBootApplication
+@SpringBootApplication
 public class BakeryApplication {
 
 
     public static void main(String[] args) {
-//		SpringApplication.run(BakeryApplication.class, args);
+		SpringApplication.run(BakeryApplication.class, args);
 
-        AddressRepository addressRepository = new CsvBasedAddressRepository();
-
-        ClientRepository clientRepository = new CsvBasedClientRepository(addressRepository);
-
-        System.out.println("Client found: ");
-        System.out.println(clientRepository.findByName("Adam"));
+//        AddressRepository addressRepository = new CsvBasedAddressRepository();
+//
+//        ClientRepository clientRepository = new CsvBasedClientRepository(addressRepository);
+//
+//        System.out.println("Client found: ");
+//        System.out.println(clientRepository.findByName("Aam"));
 
 //        clientRepository.saveNewClient("Adam", "Test", new Address(5, 65));
 //        clientRepository.saveNewClient("Hanna", "Blue", new Address(1, 34));
