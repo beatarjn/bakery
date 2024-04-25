@@ -29,7 +29,7 @@ CREATE TABLE IF NOT EXISTS clients
     order_id   INT references orders (id)
 );
 
-CREATE TABLE IF NOT EXISTS employee
+CREATE TABLE IF NOT EXISTS employees
 (
     id         SERIAL PRIMARY KEY NOT NULL,
     name       VARCHAR(50),
@@ -60,7 +60,7 @@ VALUES
     ('Rye bread', 5.00)
 ;
 
-INSERT INTO employee (name, lastName, role, address_id)
+INSERT INTO employees (name, lastName, role, address_id)
 VALUES
     ('Adam', 'Smith', 'Manager', 4),
     ('Michael', 'Jordan', 'Customer Service', 5)
