@@ -1,13 +1,7 @@
 package pl.rejmanbeata.bakery.database;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import jakarta.persistence.*;
+import lombok.*;
 
 @Entity
 @Table(name = "products")
@@ -15,13 +9,21 @@ import lombok.Setter;
 @NoArgsConstructor
 @Getter
 @Setter
+@Data
 public class ProductEntity {
 
+    public ProductEntity(String name, double price) {
+        this.name = name;
+        this.price = price;
+    }
+
     @Id
-    @Column
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", nullable = false)
     private Long id;
     @Column
     private String name;
     @Column
     private double price;
+
 }
