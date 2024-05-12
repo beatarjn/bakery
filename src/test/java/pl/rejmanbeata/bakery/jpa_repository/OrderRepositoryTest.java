@@ -6,6 +6,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.test.context.ActiveProfiles;
 import pl.rejmanbeata.bakery.database.OrderEntity;
+import pl.rejmanbeata.bakery.database.ProductEntity;
 
 import java.util.List;
 import java.util.Optional;
@@ -19,6 +20,9 @@ class OrderRepositoryTest {
 
     @Autowired
     private OrderRepository orderRepository;
+
+    @Autowired
+    private ProductRepository productRepository;
 
     @Test
     void shouldReturnListWhenFindAll() {
@@ -46,4 +50,41 @@ class OrderRepositoryTest {
     void shouldThrowExceptionWhenFindById_IdNull() {
         assertThrows(InvalidDataAccessApiUsageException.class, () -> orderRepository.findById(null));
     }
+
+    @Test
+    void testSaveOrder() {
+        ProductEntity product = new ProductEntity("Donut Oreo", 2.50);
+
+        productRepository.save(product);
+
+        OrderEntity order = createOrderEntity(product, 10);
+
+        OrderEntity savedOrder = orderRepository.save(order);
+
+        assertThat(savedOrder).isNotNull();
+        assertThat(savedOrder.getProduct()).isSameAs(product);
+    }
+
+    @Test
+    void testFindOrderById() {
+        ProductEntity product = new ProductEntity("Donut Oreo", 2.50);
+        productRepository.save(product);
+
+        OrderEntity order = createOrderEntity(product, 5);
+        OrderEntity savedOrder = orderRepository.save(order);
+
+        Optional<OrderEntity> foundOrder = orderRepository.findById(savedOrder.getId());
+
+        assertThat(foundOrder)
+                .isPresent()
+                .containsSame(savedOrder);
+    }
+
+    private static OrderEntity createOrderEntity(ProductEntity product, Integer quantity) {
+        OrderEntity order = new OrderEntity();
+        order.setProduct(product);
+        order.setQuantity(quantity);
+        return order;
+    }
+
 }
