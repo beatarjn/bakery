@@ -3,7 +3,6 @@ package pl.rejmanbeata.bakery.jpa_repository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.test.context.ActiveProfiles;
 import pl.rejmanbeata.bakery.database.OrderEntity;
 import pl.rejmanbeata.bakery.database.ProductEntity;
@@ -13,11 +12,14 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
+import static pl.rejmanbeata.bakery.jpa_repository.TestHelper.createOrderEntity;
 
 @ActiveProfiles("test")
 @DataJpaTest
 class OrderRepositoryTest {
 
+    public static final double PRICE = 2.50;
+    public static final String DONUT_OREO = "Donut Oreo";
     @Autowired
     private OrderRepository orderRepository;
 
@@ -48,7 +50,7 @@ class OrderRepositoryTest {
 
     @Test
     void shouldSaveOrder() {
-        ProductEntity product = new ProductEntity("Donut Oreo", 2.50);
+        ProductEntity product = new ProductEntity(DONUT_OREO, PRICE);
 
         productRepository.save(product);
 
@@ -62,7 +64,7 @@ class OrderRepositoryTest {
 
     @Test
     void shouldFindOrderById() {
-        ProductEntity product = new ProductEntity("Donut Oreo", 2.50);
+        ProductEntity product = new ProductEntity(DONUT_OREO, PRICE);
         productRepository.save(product);
 
         OrderEntity order = createOrderEntity(product, 5);
@@ -75,11 +77,5 @@ class OrderRepositoryTest {
                 .containsSame(savedOrder);
     }
 
-    private static OrderEntity createOrderEntity(ProductEntity product, Integer quantity) {
-        OrderEntity order = new OrderEntity();
-        order.setProduct(product);
-        order.setQuantity(quantity);
-        return order;
-    }
 
 }

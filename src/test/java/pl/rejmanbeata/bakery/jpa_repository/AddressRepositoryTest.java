@@ -8,11 +8,11 @@ import pl.rejmanbeata.bakery.database.AddressEntity;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.Random;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static pl.rejmanbeata.bakery.jpa_repository.TestHelper.generateAddressEntity;
 
 @ActiveProfiles("test")
 @DataJpaTest
@@ -20,10 +20,9 @@ class AddressRepositoryTest {
 
     @Autowired
     private AddressRepository addressRepository;
-    private final Random random = new Random();
 
     @Test
-    void shouldReturnListWhenFindAll() {
+    void shouldFindAll() {
         List<AddressEntity> allAddresses = addressRepository.findAll();
 
         assertNotNull(allAddresses);
@@ -53,15 +52,9 @@ class AddressRepositoryTest {
 
         Optional<AddressEntity> foundAddress = addressRepository.findById(saved.getId());
 
-        assertThat(foundAddress).isPresent();
-        assertThat(foundAddress.get()).isSameAs(addressEntity);
-    }
-
-    private AddressEntity generateAddressEntity() {
-        AddressEntity address = new AddressEntity();
-        address.setLatitude(random.nextDouble());
-        address.setLongitude(random.nextDouble());
-        return address;
+        assertThat(foundAddress)
+                .isPresent()
+                .containsSame(addressEntity);
     }
 
 }

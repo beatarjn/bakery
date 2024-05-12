@@ -48,10 +48,10 @@ class ProductRepositoryTest {
 
     @Test
     void shouldFindAllProducts() {
-        List<ProductEntity> allOrders = productRepository.findAll();
+        List<ProductEntity> allProducts = productRepository.findAll();
 
-        assertNotNull(allOrders);
-        assertEquals(2, allOrders.size());
+        assertNotNull(allProducts);
+        assertEquals(2, allProducts.size());
     }
 
 }
