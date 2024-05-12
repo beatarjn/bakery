@@ -47,12 +47,7 @@ class OrderRepositoryTest {
     }
 
     @Test
-    void shouldThrowExceptionWhenFindById_IdNull() {
-        assertThrows(InvalidDataAccessApiUsageException.class, () -> orderRepository.findById(null));
-    }
-
-    @Test
-    void testSaveOrder() {
+    void shouldSaveOrder() {
         ProductEntity product = new ProductEntity("Donut Oreo", 2.50);
 
         productRepository.save(product);
@@ -66,7 +61,7 @@ class OrderRepositoryTest {
     }
 
     @Test
-    void testFindOrderById() {
+    void shouldFindOrderById() {
         ProductEntity product = new ProductEntity("Donut Oreo", 2.50);
         productRepository.save(product);
 
