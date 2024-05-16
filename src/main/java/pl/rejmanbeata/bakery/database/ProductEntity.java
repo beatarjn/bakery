@@ -9,7 +9,7 @@ import lombok.*;
 @NoArgsConstructor
 @Getter
 @Setter
-@Data
+@Builder
 public class ProductEntity {
 
     public ProductEntity(String name, double price) {

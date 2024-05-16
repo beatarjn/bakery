@@ -3,22 +3,28 @@ package pl.rejmanbeata.bakery.jpa_repository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.test.context.ActiveProfiles;
 import pl.rejmanbeata.bakery.database.OrderEntity;
+import pl.rejmanbeata.bakery.database.ProductEntity;
 
 import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
+import static pl.rejmanbeata.bakery.jpa_repository.TestEntitiesFactory.createOrderEntity;
 
 @ActiveProfiles("test")
 @DataJpaTest
 class OrderRepositoryTest {
 
+    public static final double PRICE = 2.50;
+    public static final String DONUT_OREO = "Donut Oreo";
     @Autowired
     private OrderRepository orderRepository;
+
+    @Autowired
+    private ProductRepository productRepository;
 
     @Test
     void shouldReturnListWhenFindAll() {
@@ -43,7 +49,33 @@ class OrderRepositoryTest {
     }
 
     @Test
-    void shouldThrowExceptionWhenFindById_IdNull() {
-        assertThrows(InvalidDataAccessApiUsageException.class, () -> orderRepository.findById(null));
+    void shouldSaveOrder() {
+        ProductEntity product = new ProductEntity(DONUT_OREO, PRICE);
+
+        productRepository.save(product);
+
+        OrderEntity order = createOrderEntity(product, 10);
+
+        OrderEntity savedOrder = orderRepository.save(order);
+
+        assertThat(savedOrder).isNotNull();
+        assertThat(savedOrder.getProduct()).isSameAs(product);
     }
+
+    @Test
+    void shouldFindOrderById() {
+        ProductEntity product = new ProductEntity(DONUT_OREO, PRICE);
+        productRepository.save(product);
+
+        OrderEntity order = createOrderEntity(product, 5);
+        OrderEntity savedOrder = orderRepository.save(order);
+
+        Optional<OrderEntity> foundOrder = orderRepository.findById(savedOrder.getId());
+
+        assertThat(foundOrder)
+                .isPresent()
+                .containsSame(savedOrder);
+    }
+
+
 }
