@@ -7,7 +7,7 @@ VALUES
     (8.7522, 74.8566)
 ;
 
-INSERT INTO clients (name, lastName, address_id)
+INSERT INTO clients (name, last_name, address_id)
 VALUES
     ('John', 'Doe', 1),
     ('Jane', 'Smith', 2),
@@ -20,7 +20,7 @@ VALUES
     ('Rye bread', 5.00)
 ;
 
-INSERT INTO employees (name, lastName, role, address_id)
+INSERT INTO employees (name, last_name, role, address_id)
 VALUES
     ('Adam', 'Smith', 'Manager', 4),
     ('Michael', 'Jordan', 'Customer Service', 5)

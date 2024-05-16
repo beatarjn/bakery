@@ -62,7 +62,7 @@ class ClientRepositoryTest {
 
     @Test
     void shouldFindClientByLastName() {
-        ClientEntity foundClients = clientRepository.findByLastName("Smith");
+        ClientEntity foundClients = clientRepository.findByLastName("Doe");
 
         assertNotNull(foundClients);
     }

@@ -24,7 +24,7 @@ CREATE TABLE IF NOT EXISTS clients
 (
     id         SERIAL PRIMARY KEY NOT NULL,
     name       VARCHAR(50),
-    lastName   VARCHAR(50),
+    last_name   VARCHAR(50),
     address_id INT references address (id),
     order_id   INT references orders (id)
 );
@@ -33,7 +33,7 @@ CREATE TABLE IF NOT EXISTS employees
 (
     id         SERIAL PRIMARY KEY NOT NULL,
     name       VARCHAR(50),
-    lastName   VARCHAR(50),
+    last_name   VARCHAR(50),
     address_id INT references address (id),
     role VARCHAR(50)
 );
