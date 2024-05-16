@@ -12,20 +12,21 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static pl.rejmanbeata.bakery.jpa_repository.TestEntitiesFactory.createProductEntity;
 
 @ActiveProfiles("test")
 @DataJpaTest
 class ProductRepositoryTest {
 
-    public static final String DONUT = "Donut";
-    public static final double PRICE = 1.99;
+    private static final String DONUT = "Donut";
+    private static final double PRICE = 1.99;
 
     @Autowired
     private ProductRepository productRepository;
 
     @Test
     void shouldSaveProduct() {
-        ProductEntity product = new ProductEntity(DONUT, PRICE);
+        ProductEntity product = createProductEntity(DONUT, PRICE);
 
         ProductEntity savedProduct = productRepository.save(product);
 

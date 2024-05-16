@@ -13,7 +13,7 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static pl.rejmanbeata.bakery.jpa_repository.TestHelper.generateAddressEntity;
+import static pl.rejmanbeata.bakery.jpa_repository.TestEntitiesFactory.*;
 
 @ActiveProfiles("test")
 @DataJpaTest
@@ -27,14 +27,10 @@ class EmployeeRepositoryTest {
 
     @Test
     void shouldSaveEmployee() {
-        AddressEntity address = generateAddressEntity();
+        AddressEntity address = createAddressEntity();
         addressRepository.save(address);
 
-        EmployeeEntity employee = new EmployeeEntity();
-        employee.setName("John");
-        employee.setLastName("Doe");
-        employee.setAddress(address);
-        employee.setRole("Manager");
+        EmployeeEntity employee = createEmployeeEntityWithRoleAndAddress("Manager", address);
 
         EmployeeEntity savedEmployee = employeeRepository.save(employee);
 
@@ -47,14 +43,10 @@ class EmployeeRepositoryTest {
 
     @Test
     void shouldFindEmployeeById() {
-        AddressEntity address = generateAddressEntity();
+        AddressEntity address = createAddressEntity();
         addressRepository.save(address);
 
-        EmployeeEntity employee = new EmployeeEntity();
-        employee.setName("Jane");
-        employee.setLastName("Smith");
-        employee.setAddress(address);
-        employee.setRole("Sale assistant");
+        EmployeeEntity employee = createEmployeeEntityWithRoleAndAddress("Sales assistant", address);
         EmployeeEntity savedEmployee = employeeRepository.save(employee);
 
         Optional<EmployeeEntity> foundEmployee = employeeRepository.findById(savedEmployee.getId());

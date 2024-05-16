@@ -12,7 +12,7 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
-import static pl.rejmanbeata.bakery.jpa_repository.TestHelper.createOrderEntity;
+import static pl.rejmanbeata.bakery.jpa_repository.TestEntitiesFactory.createOrderEntity;
 
 @ActiveProfiles("test")
 @DataJpaTest

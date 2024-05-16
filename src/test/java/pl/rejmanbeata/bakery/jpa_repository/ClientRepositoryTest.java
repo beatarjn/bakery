@@ -12,7 +12,7 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static pl.rejmanbeata.bakery.jpa_repository.TestHelper.generateAddressEntity;
+import static pl.rejmanbeata.bakery.jpa_repository.TestEntitiesFactory.createAddressEntity;
 
 @ActiveProfiles("test")
 @DataJpaTest
@@ -26,7 +26,7 @@ class ClientRepositoryTest {
 
     @Test
     void shouldSaveClient() {
-        AddressEntity address = generateAddressEntity();
+        AddressEntity address = createAddressEntity();
         addressRepository.save(address);
 
         ClientEntity client = new ClientEntity();
@@ -44,7 +44,7 @@ class ClientRepositoryTest {
 
     @Test
     void shouldFindClientById() {
-        AddressEntity address = generateAddressEntity();
+        AddressEntity address = createAddressEntity();
         addressRepository.save(address);
 
         ClientEntity client = new ClientEntity();
@@ -69,7 +69,7 @@ class ClientRepositoryTest {
 
     @Test
     void shouldDeleteClientById() {
-        AddressEntity address = generateAddressEntity();
+        AddressEntity address = createAddressEntity();
         addressRepository.save(address);
 
         ClientEntity client = new ClientEntity();
