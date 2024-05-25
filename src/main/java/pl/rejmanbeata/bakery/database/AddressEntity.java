@@ -23,4 +23,8 @@ public class AddressEntity {
     @Column
     private double latitude;
 
+    public static AddressEntity createAddress(){
+        return new AddressEntity();
+    }
+
 }
