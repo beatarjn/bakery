@@ -13,19 +13,19 @@ public class ClientService {
 
     private final ClientRepository clientRepository;
 
-    public void save(ClientEntity address) {
-        clientRepository.save(address);
+    public ClientEntity save(ClientEntity address) {
+        return clientRepository.save(address);
     }
 
-    public List<ClientEntity> findAll() {
+    public List<ClientEntity> getAllClients() {
         return clientRepository.findAll();
     }
 
-    public ClientEntity findById(Long id) {
+    public ClientEntity getClientById(Long id) {
         return clientRepository.findById(id).orElse(null);
     }
 
-    public void deleteById(Long id) {
+    public void deleteClientById(Long id) {
         clientRepository.deleteById(id);
     }
 

@@ -13,19 +13,19 @@ public class EmployeeService {
 
     private final EmployeeRepository employeeRepository;
 
-    public void save(EmployeeEntity address) {
-        employeeRepository.save(address);
+    public EmployeeEntity save(EmployeeEntity address) {
+        return employeeRepository.save(address);
     }
 
-    public List<EmployeeEntity> findAll() {
+    public List<EmployeeEntity> getAllEmployees() {
         return employeeRepository.findAll();
     }
 
-    public EmployeeEntity findById(Long id) {
+    public EmployeeEntity getEmployeeById(Long id) {
         return employeeRepository.findById(id).orElse(null);
     }
 
-    public void deleteById(Long id) {
+    public void deleteEmployeeById(Long id) {
         employeeRepository.deleteById(id);
     }
 

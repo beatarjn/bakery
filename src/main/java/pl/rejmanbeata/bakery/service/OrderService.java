@@ -13,19 +13,19 @@ public class OrderService {
 
     private final OrderRepository orderRepository;
 
-    public void save(OrderEntity address) {
-        orderRepository.save(address);
+    public OrderEntity save(OrderEntity address) {
+        return orderRepository.save(address);
     }
 
-    public List<OrderEntity> findAll() {
+    public List<OrderEntity> getAllOrders() {
         return orderRepository.findAll();
     }
 
-    public OrderEntity findById(Long id) {
+    public OrderEntity getOrderById(Long id) {
         return orderRepository.findById(id).orElse(null);
     }
 
-    public void deleteById(Long id) {
+    public void deleteOrderById(Long id) {
         orderRepository.deleteById(id);
     }
 

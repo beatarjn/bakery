@@ -13,19 +13,19 @@ public class AddressService {
 
     private final AddressRepository addressRepository;
 
-    public void save(AddressEntity address) {
-        addressRepository.save(address);
+    public AddressEntity save(AddressEntity address) {
+        return addressRepository.save(address);
     }
 
-    public List<AddressEntity> findAll() {
+    public List<AddressEntity> getAllAddresses() {
         return addressRepository.findAll();
     }
 
-    public AddressEntity findById(Long id) {
+    public AddressEntity getAddressById(Long id) {
         return addressRepository.findById(id).orElse(null);
     }
 
-    public void deleteById(Long id) {
+    public void deleteAddressById(Long id) {
         addressRepository.deleteById(id);
     }
 }
