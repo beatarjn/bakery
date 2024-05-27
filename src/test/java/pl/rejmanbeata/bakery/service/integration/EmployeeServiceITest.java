@@ -3,6 +3,7 @@ package pl.rejmanbeata.bakery.service.integration;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
 import pl.rejmanbeata.bakery.database.AddressEntity;
 import pl.rejmanbeata.bakery.database.EmployeeEntity;
 import pl.rejmanbeata.bakery.jpa_repository.EmployeeRepository;
@@ -15,12 +16,16 @@ import static org.junit.jupiter.api.Assertions.*;
 import static pl.rejmanbeata.bakery.TestEntitiesFactory.createEmployeeEntityWithRoleAndAddress;
 
 @SpringBootTest
+@Transactional
+
 class EmployeeServiceITest {
 
     @Autowired
     private EmployeeService employeeService;
     @Autowired
     private EmployeeRepository employeeRepository;
+
+
 
     @Test
     void testFindEmployeeById_shouldReturnEmployee() {
@@ -41,7 +46,7 @@ class EmployeeServiceITest {
         List<EmployeeEntity> allEmployees = employeeService.getAllEmployees();
 
         assertNotNull(allEmployees);
-        assertEquals(3, allEmployees.size());
+        assertEquals(2, allEmployees.size());
     }
 
     @Test
@@ -58,18 +63,18 @@ class EmployeeServiceITest {
         assertThat(allEmployeesAfterSave).hasSize(allEmployees.size() + 1);
     }
 
-//    @Test
-//    void testDeleteById_shouldDeleteEmployee() {
-//        EmployeeEntity employeeEntity = createEmployeeEntityWithRoleAndAddress("Manager", new AddressEntity());
-//        employeeService.save(employeeEntity);
-//        List<EmployeeEntity> allEmployees = employeeService.getAllEmployees();
-//        assertNotNull(allEmployees);
-//
-//        employeeService.deleteEmployeeById(employeeEntity.getId());
-//
-//        List<EmployeeEntity> allEmployeesAfterDelete = employeeService.getAllEmployees();
-//
-//        assertThat(allEmployeesAfterDelete).hasSize(allEmployees.size() - 1);
-//        assertNull(employeeService.getEmployeeById(employeeEntity.getId()));
-//    }
+    @Test
+    void testDeleteById_shouldDeleteEmployee() {
+        EmployeeEntity employeeEntity = createEmployeeEntityWithRoleAndAddress("Manager", new AddressEntity());
+        employeeService.save(employeeEntity);
+        List<EmployeeEntity> allEmployees = employeeService.getAllEmployees();
+        assertNotNull(allEmployees);
+
+        employeeService.deleteEmployeeById(employeeEntity.getId());
+
+        List<EmployeeEntity> allEmployeesAfterDelete = employeeService.getAllEmployees();
+
+        assertThat(allEmployeesAfterDelete).hasSize(allEmployees.size() - 1);
+        assertNull(employeeService.getEmployeeById(employeeEntity.getId()));
+    }
 }

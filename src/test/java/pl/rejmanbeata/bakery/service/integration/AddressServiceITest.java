@@ -1,5 +1,6 @@
 package pl.rejmanbeata.bakery.service.integration;
 
+import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -14,6 +15,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static pl.rejmanbeata.bakery.TestEntitiesFactory.createAddressEntity;
 
 @SpringBootTest
+@Transactional
 class AddressServiceITest {
 
     @Autowired
@@ -57,23 +59,20 @@ class AddressServiceITest {
         assertThat(allAddressesAfterSave).hasSize(allAddresses.size() + 1);
     }
 
-//    @Test
-//    void testDeleteById_shouldDeleteAddress() {
-//        AddressEntity addressEntity = createAddressEntity();
-//
-//
-//
-//        addressService.save(addressEntity);
-//        List<AddressEntity> allAddresses = addressService.getAllAddresses();
-//        assertNotNull(allAddresses);
-//
-//        addressService.deleteAddressById(addressEntity.getId());
-//
-//        List<AddressEntity> allAddressesAfterDelete = addressService.getAllAddresses();
-//
-////        assertThat(allAddressesAfterDelete).hasSize(allAddresses.size() - 1);
-//        assertNull(addressService.getAddressById(addressEntity.getId()));
-//    }
+    @Test
+    void testDeleteById_shouldDeleteAddress() {
+        AddressEntity addressEntity = createAddressEntity();
 
+        addressService.save(addressEntity);
+        List<AddressEntity> allAddresses = addressService.getAllAddresses();
+        assertNotNull(allAddresses);
+
+        addressService.deleteAddressById(addressEntity.getId());
+
+        List<AddressEntity> allAddressesAfterDelete = addressService.getAllAddresses();
+
+        assertThat(allAddressesAfterDelete).hasSize(allAddresses.size() - 1);
+        assertNull(addressService.getAddressById(addressEntity.getId()));
+    }
 
 }
