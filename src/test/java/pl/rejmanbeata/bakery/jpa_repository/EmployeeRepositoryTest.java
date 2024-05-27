@@ -13,7 +13,7 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static pl.rejmanbeata.bakery.jpa_repository.TestEntitiesFactory.*;
+import static pl.rejmanbeata.bakery.TestEntitiesFactory.*;
 
 @ActiveProfiles("test")
 @DataJpaTest

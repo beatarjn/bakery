@@ -1,9 +1,6 @@
-package pl.rejmanbeata.bakery.jpa_repository;
+package pl.rejmanbeata.bakery;
 
-import pl.rejmanbeata.bakery.database.AddressEntity;
-import pl.rejmanbeata.bakery.database.EmployeeEntity;
-import pl.rejmanbeata.bakery.database.OrderEntity;
-import pl.rejmanbeata.bakery.database.ProductEntity;
+import pl.rejmanbeata.bakery.database.*;
 
 import java.util.Random;
 
@@ -37,6 +34,14 @@ public class TestEntitiesFactory {
     public static ProductEntity createProductEntity(String name, Double price) {
         return ProductEntity.builder()
                 .price(price)
+                .name(name)
+                .build();
+    }
+
+    public static ClientEntity createClientEntity(String name, String lastName, AddressEntity address) {
+        return ClientEntity.builder()
+                .lastName(lastName)
+                .address(address)
                 .name(name)
                 .build();
     }

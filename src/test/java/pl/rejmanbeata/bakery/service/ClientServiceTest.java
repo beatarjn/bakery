@@ -20,6 +20,7 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.willDoNothing;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static pl.rejmanbeata.bakery.TestEntitiesFactory.createClientEntity;
 
 @ExtendWith(MockitoExtension.class)
 class ClientServiceTest {
@@ -29,7 +30,7 @@ class ClientServiceTest {
     @InjectMocks
     private ClientService clientService;
     private ClientEntity client;
-    private Random random = new Random();
+    private final Random random = new Random();
 
     @BeforeEach
     public void setup() {
@@ -52,12 +53,7 @@ class ClientServiceTest {
 
     @Test
     void testGetAllClients_shouldReturnAllClients() {
-        ClientEntity client2 = ClientEntity.builder()
-                .id(2L)
-                .lastName("Smith")
-                .address(new AddressEntity(2L, random.nextDouble(), random.nextDouble()))
-                .name("Anna")
-                .build();
+        ClientEntity client2 = createClientEntity("Anna", "Smith", new AddressEntity());
 
         given(clientRepository.findAll()).willReturn(List.of(client, client2));
 

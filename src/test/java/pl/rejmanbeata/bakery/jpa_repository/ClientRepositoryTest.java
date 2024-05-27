@@ -12,7 +12,8 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static pl.rejmanbeata.bakery.jpa_repository.TestEntitiesFactory.createAddressEntity;
+import static pl.rejmanbeata.bakery.TestEntitiesFactory.createAddressEntity;
+import static pl.rejmanbeata.bakery.TestEntitiesFactory.createClientEntity;
 
 @ActiveProfiles("test")
 @DataJpaTest
@@ -29,10 +30,7 @@ class ClientRepositoryTest {
         AddressEntity address = createAddressEntity();
         addressRepository.save(address);
 
-        ClientEntity client = new ClientEntity();
-        client.setName("John");
-        client.setLastName("Doe");
-        client.setAddress(address);
+        ClientEntity client = createClientEntity("John", "Doe", address);
 
         ClientEntity savedClient = clientRepository.save(client);
 
@@ -47,10 +45,8 @@ class ClientRepositoryTest {
         AddressEntity address = createAddressEntity();
         addressRepository.save(address);
 
-        ClientEntity client = new ClientEntity();
-        client.setName("Alice");
-        client.setLastName("Smith");
-        client.setAddress(address);
+        ClientEntity client = createClientEntity("Alice", "Smith", address);
+
         ClientEntity savedClient = clientRepository.save(client);
 
         Optional<ClientEntity> foundClient = clientRepository.findById(savedClient.getId());
@@ -72,10 +68,8 @@ class ClientRepositoryTest {
         AddressEntity address = createAddressEntity();
         addressRepository.save(address);
 
-        ClientEntity client = new ClientEntity();
-        client.setName("John");
-        client.setLastName("Doe");
-        client.setAddress(address);
+        ClientEntity client = createClientEntity("John", "Doe", address);
+
         ClientEntity savedClient = clientRepository.save(client);
 
         clientRepository.deleteById(savedClient.getId());
