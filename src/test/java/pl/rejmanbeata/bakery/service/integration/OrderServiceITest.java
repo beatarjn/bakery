@@ -3,6 +3,8 @@ package pl.rejmanbeata.bakery.service.integration;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.transaction.annotation.Transactional;
 import pl.rejmanbeata.bakery.database.OrderEntity;
 import pl.rejmanbeata.bakery.jpa_repository.OrderRepository;
 import pl.rejmanbeata.bakery.service.OrderService;
@@ -15,8 +17,9 @@ import static pl.rejmanbeata.bakery.TestEntitiesFactory.createOrderEntity;
 import static pl.rejmanbeata.bakery.TestEntitiesFactory.createProductEntity;
 
 @SpringBootTest
+@ActiveProfiles("test")
+@Transactional
 class OrderServiceITest {
-
     @Autowired
     private OrderService orderService;
     @Autowired
@@ -41,7 +44,7 @@ class OrderServiceITest {
         List<OrderEntity> allOrders = orderService.getAllOrders();
 
         assertNotNull(allOrders);
-        assertEquals(4, allOrders.size());
+        assertEquals(3, allOrders.size());
     }
 
     @Test

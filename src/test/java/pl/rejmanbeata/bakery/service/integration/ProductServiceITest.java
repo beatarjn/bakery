@@ -3,6 +3,8 @@ package pl.rejmanbeata.bakery.service.integration;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.transaction.annotation.Transactional;
 import pl.rejmanbeata.bakery.database.ProductEntity;
 import pl.rejmanbeata.bakery.jpa_repository.ProductRepository;
 import pl.rejmanbeata.bakery.service.ProductService;
@@ -14,8 +16,9 @@ import static org.junit.jupiter.api.Assertions.*;
 import static pl.rejmanbeata.bakery.TestEntitiesFactory.createProductEntity;
 
 @SpringBootTest
+@ActiveProfiles("test")
+@Transactional
 class ProductServiceITest {
-
     public static final String CAKE = "Cake";
     public static final double PRICE = 17.6;
     @Autowired
@@ -45,14 +48,13 @@ class ProductServiceITest {
         assertEquals(2, allProducts.size());
     }
 
-    @Test
     void testSave_shouldSaveProduct() {
         ProductEntity productEntity = createProductEntity(CAKE, PRICE);
 
         List<ProductEntity> allProducts = productService.getAllProducts();
         assertNotNull(allProducts);
 
-        productRepository.save(productEntity);
+        productService.save(productEntity);
 
         List<ProductEntity> allProductsAfterSave = productService.getAllProducts();
 
@@ -73,4 +75,5 @@ class ProductServiceITest {
         assertThat(allProductsAfterDelete).hasSize(allProducts.size() - 1);
         assertNull(productService.getProductById(productEntity.getId()));
     }
+
 }

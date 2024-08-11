@@ -22,7 +22,6 @@ import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 class AddressServiceTest {
-
     @Mock
     private AddressRepository addressRepository;
     @InjectMocks

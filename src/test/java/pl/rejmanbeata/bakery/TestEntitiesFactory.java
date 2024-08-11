@@ -5,7 +5,6 @@ import pl.rejmanbeata.bakery.database.*;
 import java.util.Random;
 
 public class TestEntitiesFactory {
-
     private static final Random random = new Random();
 
     public static AddressEntity createAddressEntity() {

@@ -3,6 +3,8 @@ package pl.rejmanbeata.bakery.service.integration;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.transaction.annotation.Transactional;
 import pl.rejmanbeata.bakery.database.AddressEntity;
 import pl.rejmanbeata.bakery.database.ClientEntity;
 import pl.rejmanbeata.bakery.jpa_repository.ClientRepository;
@@ -15,8 +17,9 @@ import static org.junit.jupiter.api.Assertions.*;
 import static pl.rejmanbeata.bakery.TestEntitiesFactory.createClientEntity;
 
 @SpringBootTest
+@ActiveProfiles("test")
+@Transactional
 class ClientServiceITest {
-
     public static final String ADAM = "Adam";
     public static final String SMITH = "Smith";
     @Autowired
@@ -43,7 +46,7 @@ class ClientServiceITest {
         List<ClientEntity> allClients = clientService.getAllClients();
 
         assertNotNull(allClients);
-        assertEquals(4, allClients.size());
+        assertEquals(3, allClients.size());
     }
 
     @Test

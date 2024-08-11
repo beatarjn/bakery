@@ -4,6 +4,7 @@ import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 import pl.rejmanbeata.bakery.database.AddressEntity;
 import pl.rejmanbeata.bakery.jpa_repository.AddressRepository;
 import pl.rejmanbeata.bakery.service.AddressService;
@@ -15,6 +16,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static pl.rejmanbeata.bakery.TestEntitiesFactory.createAddressEntity;
 
 @SpringBootTest
+@ActiveProfiles("test")
 @Transactional
 class AddressServiceITest {
 
