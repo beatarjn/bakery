@@ -6,5 +6,5 @@ import pl.rejmanbeata.bakery.database.OrderEntity;
 
 @Repository
 public interface OrderRepository extends JpaRepository<OrderEntity, Long> {
-    boolean findByProductId(long productId);
+    public boolean findByProductId(long productId);
 }

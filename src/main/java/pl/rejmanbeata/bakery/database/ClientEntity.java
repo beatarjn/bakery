@@ -21,7 +21,7 @@ public class ClientEntity {
     @Column
     private String lastName;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "address_id")
     private AddressEntity address;
 
