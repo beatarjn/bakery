@@ -2,7 +2,7 @@ package pl.rejmanbeata.bakery.repository;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Repository;
-import pl.rejmanbeata.bakery.model.Address;
+import pl.rejmanbeata.bakery.model.address.Address;
 import pl.rejmanbeata.bakery.model.client.Client;
 
 import java.util.List;

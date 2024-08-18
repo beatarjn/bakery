@@ -2,7 +2,7 @@ package pl.rejmanbeata.bakery.repository;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import pl.rejmanbeata.bakery.model.Address;
+import pl.rejmanbeata.bakery.model.address.Address;
 import pl.rejmanbeata.bakery.model.client.Client;
 
 import java.util.ArrayList;
@@ -19,7 +19,6 @@ class ListBasedClientRepositoryTest {
     @BeforeEach
     void setUp() {
         list = initClientList();
-
         repository = new ListBasedClientRepository(list);
     }
 
@@ -91,11 +90,11 @@ class ListBasedClientRepositoryTest {
     }
 
     private List<Client> initClientList() {
-        List<Client> list = new ArrayList<>();
-        list.add(createClient("Hanna", "Blue", new Address(1, 34)));
-        list.add(createClient("Adam", "Test", new Address(5, 65)));
-        list.add(createClient("Jerry", "Morgan", new Address(23, 64)));
-        return list;
+        List<Client> clients = new ArrayList<>();
+        clients.add(createClient("Hanna", "Blue", new Address(1, 34)));
+        clients.add(createClient("Adam", "Test", new Address(5, 65)));
+        clients.add(createClient("Jerry", "Morgan", new Address(23, 64)));
+        return clients;
     }
 
     private Client createClient(String name, String lastName, Address address) {

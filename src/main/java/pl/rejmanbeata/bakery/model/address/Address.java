@@ -1,4 +1,4 @@
-package pl.rejmanbeata.bakery.model;
+package pl.rejmanbeata.bakery.model.address;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -8,8 +8,6 @@ import lombok.Data;
 @Builder
 @AllArgsConstructor
 public class Address {
-
     private double longitude;
     private double latitude;
-
 }

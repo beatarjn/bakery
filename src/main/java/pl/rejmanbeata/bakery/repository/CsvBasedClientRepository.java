@@ -2,9 +2,10 @@ package pl.rejmanbeata.bakery.repository;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Repository;
-import pl.rejmanbeata.bakery.model.Address;
+import pl.rejmanbeata.bakery.model.address.Address;
 import pl.rejmanbeata.bakery.model.client.Client;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -13,12 +14,11 @@ import static pl.rejmanbeata.bakery.repository.FileReader.readCsv;
 @Repository
 @AllArgsConstructor
 public class CsvBasedClientRepository implements ClientRepository {
-
     private AddressRepository addressRepository;
 
     @Override
     public List<Client> findAll() {
-        return null;
+        return Collections.emptyList();
     }
 
     @Override
