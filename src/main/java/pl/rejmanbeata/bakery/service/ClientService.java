@@ -10,7 +10,6 @@ import java.util.List;
 @Service
 @AllArgsConstructor
 public class ClientService {
-
     private final ClientRepository clientRepository;
 
     public ClientEntity save(ClientEntity address) {
