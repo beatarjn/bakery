@@ -1,18 +1,21 @@
 package pl.rejmanbeata.bakery.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import pl.rejmanbeata.bakery.model.address.Address;
 import pl.rejmanbeata.bakery.model.client.Client;
 
 import java.util.Random;
+
+import static org.springframework.http.MediaType.APPLICATION_JSON;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(ClientController.class)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
@@ -26,48 +29,48 @@ class ClientControllerTest {
 
     @Test
     void testGetClientByName() throws Exception {
-        Address address = createAddress();
+        var address = createAddress();
 
-        Client client = createClient("John", "Doe", address);
+        var client = createClient("John", "Doe", address);
 
-        mockMvc.perform(MockMvcRequestBuilders.post("/clients")
-                        .contentType(MediaType.APPLICATION_JSON)
+        mockMvc.perform(post("/clients")
+                        .contentType(APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(client)))
-                .andExpect(MockMvcResultMatchers.status().isCreated());
+                .andExpect(status().isCreated());
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/clients/John"))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.name").value("John"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.lastName").value("Doe"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.address.longitude").value(address.getLongitude()))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.address.latitude").value(address.getLatitude()));
+        mockMvc.perform(get("/clients/John"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.name").value("John"))
+                .andExpect(jsonPath("$.lastName").value("Doe"))
+                .andExpect(jsonPath("$.address.longitude").value(address.getLongitude()))
+                .andExpect(jsonPath("$.address.latitude").value(address.getLatitude()));
     }
 
     @Test
     void testCreateClient() throws Exception {
-        Address address = createAddress();
+        var address = createAddress();
 
-        Client client = createClient("Jane", "Smith", address);
+        var client = createClient("Jane", "Smith", address);
 
-        mockMvc.perform(MockMvcRequestBuilders.post("/clients")
-                        .contentType(MediaType.APPLICATION_JSON)
+        mockMvc.perform(post("/clients")
+                        .contentType(APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(client)))
-                .andExpect(MockMvcResultMatchers.status().isCreated())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.name").value("Jane"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.lastName").value("Smith"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.address.latitude").value(address.getLatitude()));
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.name").value("Jane"))
+                .andExpect(jsonPath("$.lastName").value("Smith"))
+                .andExpect(jsonPath("$.address.latitude").value(address.getLatitude()));
     }
 
     @Test
     void testUpdateClient() throws Exception {
-        Address address = createAddress();
+        var address = createAddress();
 
-        Client client = createClient("Clark", "Kent", address);
+        var client = createClient("Clark", "Kent", address);
 
-        mockMvc.perform(MockMvcRequestBuilders.post("/clients")
-                        .contentType(MediaType.APPLICATION_JSON)
+        mockMvc.perform(post("/clients")
+                        .contentType(APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(client)))
-                .andExpect(MockMvcResultMatchers.status().isCreated());
+                .andExpect(status().isCreated());
 
         Address updatedAddress = createAddress();
 
@@ -76,56 +79,55 @@ class ClientControllerTest {
                 .address(updatedAddress)
                 .build();
 
-        mockMvc.perform(MockMvcRequestBuilders.put("/clients/Clark")
-                        .contentType(MediaType.APPLICATION_JSON)
+        mockMvc.perform(put("/clients/Clark")
+                        .contentType(APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(updatedClient)))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.lastName").value("Wayne"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.address.latitude").value(updatedAddress.getLatitude()));
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.lastName").value("Wayne"))
+                .andExpect(jsonPath("$.address.latitude").value(updatedAddress.getLatitude()));
     }
 
     @Test
     void testDeleteClient() throws Exception {
-        Address address = createAddress();
+        var address = createAddress();
 
-        Client client = createClient("Oliver", "Queen", address);
+        var client = createClient("Oliver", "Queen", address);
 
-        mockMvc.perform(MockMvcRequestBuilders.post("/clients")
-                        .contentType(MediaType.APPLICATION_JSON)
+        mockMvc.perform(post("/clients")
+                        .contentType(APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(client)))
-                .andExpect(MockMvcResultMatchers.status().isCreated());
+                .andExpect(status().isCreated());
 
+        mockMvc.perform(delete("/clients/Oliver"))
+                .andExpect(status().isNoContent());
 
-        mockMvc.perform(MockMvcRequestBuilders.delete("/clients/Oliver"))
-                .andExpect(MockMvcResultMatchers.status().isNoContent());
-
-        mockMvc.perform(MockMvcRequestBuilders.get("/clients/Oliver"))
-                .andExpect(MockMvcResultMatchers.status().isNotFound());
+        mockMvc.perform(get("/clients/Oliver"))
+                .andExpect(status().isNotFound());
     }
 
     @Test
     void testGetAllClients() throws Exception {
-        Address address1 = createAddress();
-        Client client1 = createClient("Barry", "Allen", address1);
+        var address1 = createAddress();
+        var client1 = createClient("Barry", "Allen", address1);
 
-        Address address2 = createAddress();
-        Client client2 = createClient("Hall", "Jordan", address2);
+        var address2 = createAddress();
+        var client2 = createClient("Hall", "Jordan", address2);
 
-        mockMvc.perform(MockMvcRequestBuilders.post("/clients")
-                        .contentType(MediaType.APPLICATION_JSON)
+        mockMvc.perform(post("/clients")
+                        .contentType(APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(client1)))
-                .andExpect(MockMvcResultMatchers.status().isCreated());
+                .andExpect(status().isCreated());
 
-        mockMvc.perform(MockMvcRequestBuilders.post("/clients")
-                        .contentType(MediaType.APPLICATION_JSON)
+        mockMvc.perform(post("/clients")
+                        .contentType(APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(client2)))
-                .andExpect(MockMvcResultMatchers.status().isCreated());
+                .andExpect(status().isCreated());
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/clients"))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.length()").value(2))
-                .andExpect(MockMvcResultMatchers.jsonPath("$[0].name").value("Barry"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$[1].name").value("Hall"));
+        mockMvc.perform(get("/clients"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()").value(2))
+                .andExpect(jsonPath("$[0].name").value("Barry"))
+                .andExpect(jsonPath("$[1].name").value("Hall"));
     }
 
     private static Address createAddress() {
