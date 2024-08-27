@@ -23,9 +23,9 @@ public class ClientController {
         this.clientMapper = clientMapper;
     }
 
-    @GetMapping("/{name}")
-    public ResponseEntity<Client> getClientByName(@PathVariable String name) {
-        Client client = clientMapper.clientEntityToClient(clientService.findByLastName(name));
+    @GetMapping("/{id}")
+    public ResponseEntity<Client> getClientById(@PathVariable Long id) {
+        Client client = clientMapper.clientEntityToClient(clientService.getClientById(id));
         return new ResponseEntity<>(client, OK);
     }
 
