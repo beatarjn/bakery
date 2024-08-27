@@ -17,4 +17,11 @@ public interface ClientMapper {
             @Mapping(source = "address", target = "address")
     })
     Client clientEntityToClient(ClientEntity source);
+
+    @Mappings({
+            @Mapping(source = "lastName", target = "lastName"),
+            @Mapping(source = "name", target = "name"),
+            @Mapping(source = "address", target = "address")
+    })
+    ClientEntity clientToClientEntity(Client source);
 }
