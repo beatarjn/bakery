@@ -1,5 +1,6 @@
 package pl.rejmanbeata.bakery.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,9 +16,12 @@ import static org.springframework.http.HttpStatus.OK;
 @RestController
 @RequestMapping("/clients")
 public class ClientController {
+    @Autowired
     private ClientService clientService;
+    @Autowired
     private ClientMapper clientMapper;
 
+    @Autowired
     public ClientController(ClientMapper clientMapper, ClientService clientService) {
         this.clientService = clientService;
         this.clientMapper = clientMapper;
@@ -39,9 +43,9 @@ public class ClientController {
     @PutMapping("/{id}")
     public ResponseEntity<Client> updateClient(@PathVariable Long id, @RequestBody Client updatedClient) {
         ClientEntity clientEntity = clientMapper.clientToClientEntity(updatedClient);
-        ClientEntity savedClient = clientService.updateClient(id, clientEntity);
+        Client savedClient = clientService.updateClient(id, clientEntity);
         if (savedClient != null) {
-            return new ResponseEntity<>(updatedClient, OK);
+            return new ResponseEntity<>(savedClient, OK);
         }
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
@@ -49,7 +53,6 @@ public class ClientController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteClient(@PathVariable Long id) {
         ClientEntity existingClient = clientService.getClientById(id);
-
         if (existingClient != null) {
             clientService.deleteClientById(id);
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);

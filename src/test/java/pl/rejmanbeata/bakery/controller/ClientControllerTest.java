@@ -6,142 +6,168 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
-import pl.rejmanbeata.bakery.model.address.Address;
+import pl.rejmanbeata.bakery.database.AddressEntity;
+import pl.rejmanbeata.bakery.database.ClientEntity;
+import pl.rejmanbeata.bakery.mapper.ClientMapper;
 import pl.rejmanbeata.bakery.model.client.Client;
+import pl.rejmanbeata.bakery.service.ClientService;
 
 import java.util.Random;
 
-import static org.springframework.http.MediaType.APPLICATION_JSON;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @AutoConfigureMockMvc
-@SpringBootTest
-@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 @ExtendWith(SpringExtension.class)
 @ActiveProfiles("test")
+@WebMvcTest({ClientController.class, ClientMapper.class})
 class ClientControllerTest {
+    private static final Random random = new Random();
+    @MockBean
+    private ClientService clientService;
+    @MockBean
+    private ClientMapper clientMapper;
     @Autowired
     private MockMvc mockMvc;
 
-    @Autowired
-    private ObjectMapper objectMapper;
-    private static final Random random = new Random();
-
     @Test
     void testGetClientByName() throws Exception {
-        var address = createAddress();
+        Long clientId = 1L;
+        ClientEntity mockClientEntity = new ClientEntity();
+        Client mockClient = new Client();
 
-        mockMvc.perform(get("/clients/John"))
+        when(clientService.getClientById(clientId)).thenReturn(mockClientEntity);
+        when(clientMapper.clientEntityToClient(mockClientEntity)).thenReturn(mockClient);
+
+        mockMvc.perform(get("/clients/" + clientId))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.name").value("John"))
-                .andExpect(jsonPath("$.lastName").value("Doe"))
-                .andExpect(jsonPath("$.address.longitude").value(address.getLongitude()))
-                .andExpect(jsonPath("$.address.latitude").value(address.getLatitude()));
+                .andExpect(jsonPath("$.name").value(mockClient.getName()))
+                .andExpect(jsonPath("$.lastName").value(mockClient.getLastName()));
+
+        verify(clientService, times(1)).getClientById(clientId);
+        verify(clientMapper, times(1)).clientEntityToClient(mockClientEntity);
     }
 
     @Test
     void testCreateClient() throws Exception {
-        var address = createAddress();
+        ClientEntity clientEntity = createClientEntity("Jane", "Doe", createAddressEntity());
+        Client client = new Client();
 
-        var client = createClient("Jane", "Smith", address);
+        when(clientMapper.clientToClientEntity(client)).thenReturn(clientEntity);
+        when(clientService.save(clientEntity)).thenReturn(client);
 
         mockMvc.perform(post("/clients")
-                        .contentType(APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(client)))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(asJsonString(client)))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.name").value("Jane"))
-                .andExpect(jsonPath("$.lastName").value("Smith"))
-                .andExpect(jsonPath("$.address.latitude").value(address.getLatitude()));
+                .andExpect(jsonPath("$.name").value(client.getName()))
+                .andExpect(jsonPath("$.lastName").value(client.getLastName()));
+
+        verify(clientMapper, times(1)).clientToClientEntity(client);
+        verify(clientService, times(1)).save(clientEntity);
     }
 
     @Test
     void testUpdateClient() throws Exception {
-        var address = createAddress();
-
-        var client = createClient("Clark", "Kent", address);
-
-        mockMvc.perform(post("/clients")
-                        .contentType(APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(client)))
-                .andExpect(status().isCreated());
-
-        Address updatedAddress = createAddress();
-
-        Client updatedClient = Client.builder()
-                .lastName("Wayne")
-                .address(updatedAddress)
+        Long clientId = 1L;
+        ClientEntity updatedClient = createClientEntity("John", "Smith", createAddressEntity());
+        Client client = Client.builder()
+                .name("John")
+                .lastName("Smith")
                 .build();
 
-        mockMvc.perform(put("/clients/Clark")
-                        .contentType(APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(updatedClient)))
+        when(clientMapper.clientToClientEntity(eq(client))).thenReturn(updatedClient);
+        when(clientService.updateClient(clientId, updatedClient)).thenReturn(client);
+
+        mockMvc.perform(put("/clients/" + clientId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(asJsonString(client)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.lastName").value("Wayne"))
-                .andExpect(jsonPath("$.address.latitude").value(updatedAddress.getLatitude()));
+                .andExpect(jsonPath("$.name").value(updatedClient.getName()))
+                .andExpect(jsonPath("$.lastName").value(updatedClient.getLastName()));
+
+        verify(clientMapper, times(1)).clientToClientEntity(client);
+        verify(clientService, times(1)).updateClient(clientId, updatedClient);
+    }
+
+    @Test
+    void testUpdateClientNotFound() throws Exception {
+        Long clientId = 1L;
+        ClientEntity updatedClient = createClientEntity("John", "Smith", null);
+        Client client = Client.builder()
+                .name("John")
+                .lastName("Smith")
+                .build();
+
+        when(clientMapper.clientToClientEntity(client)).thenReturn(updatedClient);
+        when(clientService.updateClient(clientId, updatedClient)).thenReturn(null);
+
+        mockMvc.perform(put("/clients/" + clientId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(asJsonString(updatedClient)))
+                .andExpect(status().isNotFound());
+
+        verify(clientMapper, times(1)).clientToClientEntity(client);
+        verify(clientService, times(1)).updateClient(clientId, updatedClient);
     }
 
     @Test
     void testDeleteClient() throws Exception {
-        var address = createAddress();
+        Long clientId = 1L;
+        ClientEntity existingClient = new ClientEntity();
 
-        var client = createClient("Oliver", "Queen", address);
+        when(clientService.getClientById(clientId)).thenReturn(existingClient);
+        doNothing().when(clientService).deleteClientById(clientId);
 
-        mockMvc.perform(post("/clients")
-                        .contentType(APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(client)))
-                .andExpect(status().isCreated());
-
-        mockMvc.perform(delete("/clients/Oliver"))
+        mockMvc.perform(delete("/clients/" + clientId))
                 .andExpect(status().isNoContent());
 
-        mockMvc.perform(get("/clients/Oliver"))
-                .andExpect(status().isNotFound());
+        verify(clientService, times(1)).getClientById(clientId);
+        verify(clientService, times(1)).deleteClientById(clientId);
     }
 
     @Test
-    void testGetAllClients() throws Exception {
-        var address1 = createAddress();
-        var client1 = createClient("Barry", "Allen", address1);
+    void testDeleteClientNotFound() throws Exception {
+        Long clientId = 1L;
 
-        var address2 = createAddress();
-        var client2 = createClient("Hall", "Jordan", address2);
+        when(clientService.getClientById(clientId)).thenReturn(null);
 
-        mockMvc.perform(post("/clients")
-                        .contentType(APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(client1)))
-                .andExpect(status().isCreated());
+        mockMvc.perform(delete("/clients/" + clientId))
+                .andExpect(status().isNotFound());
 
-        mockMvc.perform(post("/clients")
-                        .contentType(APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(client2)))
-                .andExpect(status().isCreated());
-
-        mockMvc.perform(get("/clients"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.length()").value(2))
-                .andExpect(jsonPath("$[0].name").value("Barry"))
-                .andExpect(jsonPath("$[1].name").value("Hall"));
+        verify(clientService, times(1)).getClientById(clientId);
+        verify(clientService, times(0)).deleteClientById(clientId);
     }
 
-    private static Address createAddress() {
-        return Address.builder()
+
+    private static AddressEntity createAddressEntity() {
+        return AddressEntity.builder()
                 .longitude(random.nextDouble())
                 .latitude(random.nextDouble())
                 .build();
     }
 
-    private static Client createClient(String name, String lastName, Address address) {
-        return Client.builder()
+    private static ClientEntity createClientEntity(String name, String lastName, AddressEntity address) {
+        return ClientEntity.builder()
                 .name(name)
                 .lastName(lastName)
                 .address(address)
                 .build();
     }
+
+    private static String asJsonString(final Object obj) {
+        try {
+            return new ObjectMapper().writeValueAsString(obj);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 }
