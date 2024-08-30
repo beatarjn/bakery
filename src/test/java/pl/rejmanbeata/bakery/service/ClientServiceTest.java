@@ -9,6 +9,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import pl.rejmanbeata.bakery.database.AddressEntity;
 import pl.rejmanbeata.bakery.database.ClientEntity;
 import pl.rejmanbeata.bakery.jpa_repository.ClientRepository;
+import pl.rejmanbeata.bakery.model.client.Client;
 
 import java.util.Collections;
 import java.util.List;
@@ -46,7 +47,7 @@ class ClientServiceTest {
     void testSave_shouldSaveAndReturnClient() {
         given(clientRepository.save(client)).willReturn(client);
 
-        ClientEntity savedClient = clientService.save(client);
+        Client savedClient = clientService.save(client);
 
         assertThat(savedClient).isNotNull();
     }

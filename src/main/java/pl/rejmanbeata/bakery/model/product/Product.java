@@ -8,7 +8,6 @@ import lombok.Data;
 @Builder
 @AllArgsConstructor
 public class Product {
-
     private String name;
     private double price;
 }
