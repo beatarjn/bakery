@@ -30,7 +30,7 @@ public class ClientController {
     @GetMapping("/{id}")
     public ResponseEntity<Client> getClientById(@PathVariable Long id) {
         Client client = clientMapper.clientEntityToClient(clientService.getClientById(id));
-        return new ResponseEntity<>(client, OK);
+        return client == null ? new ResponseEntity<>(HttpStatus.NOT_FOUND) : new ResponseEntity<>(client, OK);
     }
 
     @PostMapping
@@ -44,10 +44,7 @@ public class ClientController {
     public ResponseEntity<Client> updateClient(@PathVariable Long id, @RequestBody Client updatedClient) {
         ClientEntity clientEntity = clientMapper.clientToClientEntity(updatedClient);
         Client savedClient = clientService.updateClient(id, clientEntity);
-        if (savedClient != null) {
-            return new ResponseEntity<>(savedClient, OK);
-        }
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        return savedClient != null ? new ResponseEntity<>(savedClient, OK) : new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
     @DeleteMapping("/{id}")
