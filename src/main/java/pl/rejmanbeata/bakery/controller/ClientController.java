@@ -29,7 +29,7 @@ public class ClientController {
 
     @GetMapping("/{id}")
     public ResponseEntity<Client> getClientById(@PathVariable Long id) {
-        Client client = clientMapper.clientEntityToClient(clientService.getClientById(id));
+        Client client = clientService.getClientById(id);
         return client == null ? new ResponseEntity<>(HttpStatus.NOT_FOUND) : new ResponseEntity<>(client, OK);
     }
 
@@ -49,7 +49,7 @@ public class ClientController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteClient(@PathVariable Long id) {
-        ClientEntity existingClient = clientService.getClientById(id);
+        Client existingClient = clientService.getClientById(id);
         if (existingClient != null) {
             clientService.deleteClientById(id);
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -59,10 +59,6 @@ public class ClientController {
 
     @GetMapping
     public ResponseEntity<List<Client>> getAllClients() {
-        List<Client> clients = clientService.getAllClients()
-                .stream()
-                .map(c -> clientMapper.clientEntityToClient(c))
-                .toList();
-        return new ResponseEntity<>(clients, OK);
+        return new ResponseEntity<>(clientService.getAllClients(), OK);
     }
 }

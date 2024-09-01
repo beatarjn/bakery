@@ -40,6 +40,7 @@ class ClientControllerTest {
     @Test
     void shouldGetClientById_Found() {
         when(clientMapper.clientEntityToClient(any())).thenReturn(client);
+        when(clientService.getClientById(any())).thenReturn(client);
 
         ResponseEntity<Client> clientById = clientController.getClientById(CLIENT_ID);
 
@@ -102,9 +103,7 @@ class ClientControllerTest {
 
     @Test
     void shouldDeleteClient_Found() {
-        ClientEntity existingClient = new ClientEntity();
-
-        when(clientService.getClientById(CLIENT_ID)).thenReturn(existingClient);
+        when(clientService.getClientById(CLIENT_ID)).thenReturn(client);
 
         ResponseEntity<Void> response = clientController.deleteClient(CLIENT_ID);
 
@@ -128,26 +127,18 @@ class ClientControllerTest {
 
     @Test
     void shouldGetAllClients() {
-        ClientEntity clientEntity1 = new ClientEntity();
-        ClientEntity clientEntity2 = new ClientEntity();
-        List<ClientEntity> clientEntities = List.of(clientEntity1, clientEntity2);
+        Client clientEntity1 = new Client();
+        Client clientEntity2 = new Client();
+        List<Client> clients = List.of(clientEntity1, clientEntity2);
 
-        Client client1 = new Client();
-        Client client2 = new Client();
-        List<Client> expectedClients = List.of(client1, client2);
-
-        when(clientService.getAllClients()).thenReturn(clientEntities);
-        when(clientMapper.clientEntityToClient(clientEntity1)).thenReturn(client1);
-        when(clientMapper.clientEntityToClient(clientEntity2)).thenReturn(client2);
+        when(clientService.getAllClients()).thenReturn(clients);
 
         ResponseEntity<List<Client>> response = clientController.getAllClients();
 
         verify(clientService, times(1)).getAllClients();
-        verify(clientMapper, times(1)).clientEntityToClient(clientEntity1);
-        verify(clientMapper, times(1)).clientEntityToClient(clientEntity2);
         assertEquals(OK, response.getStatusCode());
         assertNotNull(response.getBody());
-        assertEquals(expectedClients, response.getBody());
+        assertEquals(clients, response.getBody());
     }
 
     @Test

@@ -1,5 +1,6 @@
 package pl.rejmanbeata.bakery.service;
 
+import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -19,12 +20,13 @@ import java.util.Random;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.when;
 import static org.mockito.BDDMockito.willDoNothing;
 import static org.mockito.Mockito.*;
 import static pl.rejmanbeata.bakery.TestEntitiesFactory.createClientEntity;
 
 @ExtendWith(MockitoExtension.class)
+@Transactional
 class ClientServiceTest {
     public static final String DOE = "Doe";
     public static final String JOHN = "John";
@@ -62,9 +64,9 @@ class ClientServiceTest {
     void testGetAllClients_shouldReturnAllClients() {
         ClientEntity client2 = createClientEntity("Anna", "Smith", new AddressEntity());
 
-        given(clientRepository.findAll()).willReturn(List.of(clientEntity, client2));
+        when(clientRepository.findAll()).thenReturn(List.of(clientEntity, client2));
 
-        List<ClientEntity> clients = clientService.getAllClients();
+        List<Client> clients = clientService.getAllClients();
 
         assertThat(clients)
                 .isNotNull()
@@ -73,18 +75,19 @@ class ClientServiceTest {
 
     @Test
     void testGetAllClients_shouldReturnEmptyList() {
-        given(clientRepository.findAll()).willReturn(Collections.emptyList());
+        when(clientRepository.findAll()).thenReturn(Collections.emptyList());
 
-        List<ClientEntity> clients = clientService.getAllClients();
+        List<Client> clients = clientService.getAllClients();
 
         assertThat(clients).isEmpty();
     }
 
     @Test
     void testGetClientById_shouldReturnClientById() {
-        given(clientRepository.findById(1L)).willReturn(Optional.of(clientEntity));
+        when(clientRepository.findById(1L)).thenReturn(Optional.of(clientEntity));
+        when(clientMapper.clientEntityToClient(any())).thenReturn(new Client());
 
-        ClientEntity savedClient = clientService.getClientById(clientEntity.getId());
+        Client savedClient = clientService.getClientById(clientEntity.getId());
 
         assertThat(savedClient).isNotNull();
     }
@@ -102,9 +105,10 @@ class ClientServiceTest {
 
     @Test
     void testFindByLastName_shouldReturnClientByLastName() {
-        given(clientRepository.findByLastName(DOE)).willReturn(clientEntity);
+        when(clientRepository.findByLastName(DOE)).thenReturn(clientEntity);
+        when(clientMapper.clientEntityToClient(any())).thenReturn(new Client());
 
-        ClientEntity savedClient = clientService.findByLastName(clientEntity.getLastName());
+        Client savedClient = clientService.findByLastName(clientEntity.getLastName());
 
         assertThat(savedClient).isNotNull();
     }

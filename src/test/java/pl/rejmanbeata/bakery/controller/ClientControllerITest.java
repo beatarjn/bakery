@@ -46,7 +46,7 @@ class ClientControllerITest {
         ClientEntity mockClientEntity = new ClientEntity();
         Client mockClient = new Client();
 
-        when(clientService.getClientById(clientId)).thenReturn(mockClientEntity);
+        when(clientService.getClientById(clientId)).thenReturn(mockClient);
         when(clientMapper.clientEntityToClient(mockClientEntity)).thenReturn(mockClient);
 
         mockMvc.perform(get(CLIENTS_PATH + clientId))
@@ -55,7 +55,6 @@ class ClientControllerITest {
                 .andExpect(jsonPath("$.lastName").value(mockClient.getLastName()));
 
         verify(clientService, times(1)).getClientById(clientId);
-        verify(clientMapper, times(1)).clientEntityToClient(mockClientEntity);
     }
 
     @Test
@@ -124,9 +123,8 @@ class ClientControllerITest {
     @Test
     void testDeleteClient() throws Exception {
         Long clientId = 1L;
-        ClientEntity existingClient = new ClientEntity();
 
-        when(clientService.getClientById(clientId)).thenReturn(existingClient);
+        when(clientService.getClientById(clientId)).thenReturn(new Client());
         doNothing().when(clientService).deleteClientById(clientId);
 
         mockMvc.perform(delete(CLIENTS_PATH + clientId))

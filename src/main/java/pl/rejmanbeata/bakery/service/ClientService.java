@@ -9,6 +9,7 @@ import pl.rejmanbeata.bakery.model.client.Client;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -21,20 +22,23 @@ public class ClientService {
         return clientMapper.clientEntityToClient(savedClient);
     }
 
-    public List<ClientEntity> getAllClients() {
-        return clientRepository.findAll();
+    public List<Client> getAllClients() {
+        return clientRepository.findAll()
+                .stream()
+                .map(clientMapper::clientEntityToClient)
+                .toList();
     }
 
-    public ClientEntity getClientById(Long id) {
-        return clientRepository.findById(id).orElse(null);
+    public Client getClientById(Long id) {
+        return clientMapper.clientEntityToClient(clientRepository.findById(id).orElse(null));
     }
 
     public void deleteClientById(Long id) {
         clientRepository.deleteById(id);
     }
 
-    public ClientEntity findByLastName(String lastName) {
-        return clientRepository.findByLastName(lastName);
+    public Client findByLastName(String lastName) {
+        return clientMapper.clientEntityToClient(clientRepository.findByLastName(lastName));
     }
 
     public Client updateClient(Long clientId, ClientEntity client) {

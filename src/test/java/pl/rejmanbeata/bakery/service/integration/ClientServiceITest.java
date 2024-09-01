@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import pl.rejmanbeata.bakery.database.AddressEntity;
 import pl.rejmanbeata.bakery.database.ClientEntity;
 import pl.rejmanbeata.bakery.jpa_repository.ClientRepository;
+import pl.rejmanbeata.bakery.model.client.Client;
 import pl.rejmanbeata.bakery.service.ClientService;
 
 import java.util.List;
@@ -29,21 +30,21 @@ class ClientServiceITest {
 
     @Test
     void testFindClientById_shouldReturnClient() {
-        ClientEntity foundClient = clientService.getClientById(1L);
+        Client foundClient = clientService.getClientById(1L);
 
         assertNotNull(foundClient);
     }
 
     @Test
     void testFindClientById_shouldReturnNull() {
-        ClientEntity foundClient = clientService.getClientById(8L);
+        Client foundClient = clientService.getClientById(8L);
 
         assertNull(foundClient);
     }
 
     @Test
     void testGetAllClients_shouldFindAll() {
-        List<ClientEntity> allClients = clientService.getAllClients();
+        List<Client> allClients = clientService.getAllClients();
 
         assertNotNull(allClients);
         assertEquals(3, allClients.size());
@@ -53,12 +54,12 @@ class ClientServiceITest {
     void testSave_shouldSaveClient() {
         ClientEntity clientEntity = createClientEntity(ADAM, SMITH, new AddressEntity());
 
-        List<ClientEntity> allClients = clientService.getAllClients();
+        List<Client> allClients = clientService.getAllClients();
         assertNotNull(allClients);
 
         clientRepository.save(clientEntity);
 
-        List<ClientEntity> allClientsAfterSave = clientService.getAllClients();
+        List<Client> allClientsAfterSave = clientService.getAllClients();
 
         assertThat(allClientsAfterSave).hasSize(allClients.size() + 1);
     }
@@ -67,12 +68,12 @@ class ClientServiceITest {
     void testDeleteById_shouldDeleteClient() {
         ClientEntity clientEntity = createClientEntity(ADAM, SMITH, new AddressEntity());
         clientService.save(clientEntity);
-        List<ClientEntity> allClients = clientService.getAllClients();
+        List<Client> allClients = clientService.getAllClients();
         assertNotNull(allClients);
 
         clientService.deleteClientById(clientEntity.getId());
 
-        List<ClientEntity> allAddressesAfterDelete = clientService.getAllClients();
+        List<Client> allAddressesAfterDelete = clientService.getAllClients();
 
         assertThat(allAddressesAfterDelete).hasSize(allClients.size() - 1);
         assertNull(clientService.getClientById(clientEntity.getId()));
