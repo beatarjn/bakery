@@ -1,4 +1,4 @@
-package pl.rejmanbeata.bakery.controller;
+package pl.rejmanbeata.bakery.controller.client;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
@@ -11,6 +11,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
+import pl.rejmanbeata.bakery.controller.ClientController;
 import pl.rejmanbeata.bakery.database.AddressEntity;
 import pl.rejmanbeata.bakery.database.ClientEntity;
 import pl.rejmanbeata.bakery.mapper.ClientMapper;

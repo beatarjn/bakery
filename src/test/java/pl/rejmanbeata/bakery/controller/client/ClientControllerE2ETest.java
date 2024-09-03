@@ -1,4 +1,4 @@
-package pl.rejmanbeata.bakery.controller;
+package pl.rejmanbeata.bakery.controller.client;
 
 import jakarta.transaction.Transactional;
 import org.hamcrest.Matchers;

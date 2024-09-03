@@ -1,68 +1,57 @@
 package pl.rejmanbeata.bakery.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.rejmanbeata.bakery.model.employee.Employee;
+import pl.rejmanbeata.bakery.service.EmployeeService;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
+
+import static org.springframework.http.HttpStatus.OK;
 
 @RestController
 @RequestMapping("/employees")
 public class EmployeeController {
-    private final List<Employee> employeeList = new ArrayList<>();
+    @Autowired
+    private final EmployeeService employeeService;
 
-    @GetMapping("/{name}")
-    public ResponseEntity<Employee> getEmployeeByName(@PathVariable String name) {
-        Optional<Employee> employee = employeeList.stream()
-                .filter(emp -> emp.getName().equalsIgnoreCase(name))
-                .findFirst();
+    @Autowired
+    public EmployeeController(EmployeeService employeeService) {
+        this.employeeService = employeeService;
+    }
 
-        return employee
-                .map(value -> new ResponseEntity<>(value, HttpStatus.OK))
-                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    @GetMapping("/{id}")
+    public ResponseEntity<Employee> getEmployeeById(@PathVariable Long id) {
+        Employee employee = employeeService.getEmployeeById(id);
+        return employee == null ? new ResponseEntity<>(HttpStatus.NOT_FOUND) : new ResponseEntity<>(employee, HttpStatus.OK);
     }
 
     @PostMapping
     public ResponseEntity<Employee> createEmployee(@RequestBody Employee employee) {
-        employeeList.add(employee);
-        return new ResponseEntity<>(employee, HttpStatus.CREATED);
+        Employee savedEmployee = employeeService.save(employee);
+        return new ResponseEntity<>(savedEmployee, HttpStatus.CREATED);
     }
 
-    @PutMapping("/{name}")
-    public ResponseEntity<Employee> updateEmployee(@PathVariable String name, @RequestBody Employee updatedEmployee) {
-        Optional<Employee> existingEmployee = employeeList.stream()
-                .filter(emp -> emp.getName().equalsIgnoreCase(name))
-                .findFirst();
-
-        if (existingEmployee.isPresent()) {
-            Employee emp = existingEmployee.get();
-            emp.setLastName(updatedEmployee.getLastName());
-            emp.setRole(updatedEmployee.getRole());
-            return new ResponseEntity<>(emp, HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+    @PutMapping("/{id}")
+    public ResponseEntity<Employee> updateEmployee(@PathVariable Long id, @RequestBody Employee updatedEmployee) {
+        Employee savedEmployee = employeeService.updateEmployee(id, updatedEmployee);
+        return savedEmployee != null ? new ResponseEntity<>(savedEmployee, OK) : new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
-    @DeleteMapping("/{name}")
-    public ResponseEntity<Void> deleteEmployee(@PathVariable String name) {
-        Optional<Employee> existingEmployee = employeeList.stream()
-                .filter(emp -> emp.getName().equalsIgnoreCase(name))
-                .findFirst();
-
-        if (existingEmployee.isPresent()) {
-            employeeList.remove(existingEmployee.get());
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteEmployee(@PathVariable Long id) {
+        Employee existingEmployee = employeeService.getEmployeeById(id);
+        if (existingEmployee != null) {
+            employeeService.deleteEmployeeById(id);
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
     @GetMapping
     public ResponseEntity<List<Employee>> getAllEmployees() {
-        return new ResponseEntity<>(employeeList, HttpStatus.OK);
+        return new ResponseEntity<>(employeeService.getAllEmployees(), HttpStatus.OK);
     }
 }

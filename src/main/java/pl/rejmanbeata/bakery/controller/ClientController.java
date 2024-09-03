@@ -36,8 +36,8 @@ public class ClientController {
     @PostMapping
     public ResponseEntity<Client> createClient(@RequestBody Client client) {
         ClientEntity clientEntity = clientMapper.clientToClientEntity(client);
-        clientService.save(clientEntity);
-        return new ResponseEntity<>(client, HttpStatus.CREATED);
+        Client savedClient = clientService.save(clientEntity);
+        return new ResponseEntity<>(savedClient, HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")

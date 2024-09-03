@@ -16,7 +16,8 @@ public class EmployeeService {
     private final EmployeeRepository employeeRepository;
     private final EmployeeMapper employeeMapper;
 
-    public Employee save(EmployeeEntity employeeEntity) {
+    public Employee save(Employee employee) {
+        EmployeeEntity employeeEntity = employeeMapper.employeeToEmployeeEntity(employee);
         EmployeeEntity savedEmployee = employeeRepository.save(employeeEntity);
         return employeeMapper.employeeEntityToEmployee(savedEmployee);
     }
