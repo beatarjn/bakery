@@ -12,5 +12,7 @@ jobs:
         with:
           java-version: '21'
           distribution: 'temurin'
+      - name: "Gradle permisions"
+        run: chmod +x ./gradlew
       - name: "Build with Gradle"
         run: ./gradlew build
