@@ -28,9 +28,9 @@ public class ClientController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Client> getClientById(@PathVariable Long id) {
-        Client client = clientMapper.clientEntityToClient(clientService.getClientById(id));
-        return new ResponseEntity<>(client, OK);
+    public ResponseEntity<Client> getClientById(@PathVariable("id") Long id) {
+        Client client = clientService.getClientById(id);
+        return client == null ? new ResponseEntity<>(HttpStatus.NOT_FOUND) : new ResponseEntity<>(client, OK);
     }
 
     @PostMapping
@@ -41,18 +41,15 @@ public class ClientController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Client> updateClient(@PathVariable Long id, @RequestBody Client updatedClient) {
+    public ResponseEntity<Client> updateClient(@PathVariable("id") Long id, @RequestBody Client updatedClient) {
         ClientEntity clientEntity = clientMapper.clientToClientEntity(updatedClient);
         Client savedClient = clientService.updateClient(id, clientEntity);
-        if (savedClient != null) {
-            return new ResponseEntity<>(savedClient, OK);
-        }
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        return savedClient != null ? new ResponseEntity<>(savedClient, OK) : new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteClient(@PathVariable Long id) {
-        ClientEntity existingClient = clientService.getClientById(id);
+    public ResponseEntity<Void> deleteClient(@PathVariable("id") Long id) {
+        Client existingClient = clientService.getClientById(id);
         if (existingClient != null) {
             clientService.deleteClientById(id);
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -62,10 +59,6 @@ public class ClientController {
 
     @GetMapping
     public ResponseEntity<List<Client>> getAllClients() {
-        List<Client> clients = clientService.getAllClients()
-                .stream()
-                .map(c -> clientMapper.clientEntityToClient(c))
-                .toList();
-        return new ResponseEntity<>(clients, OK);
+        return new ResponseEntity<>(clientService.getAllClients(), OK);
     }
 }

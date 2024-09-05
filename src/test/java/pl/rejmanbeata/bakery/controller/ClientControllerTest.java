@@ -1,173 +1,161 @@
 package pl.rejmanbeata.bakery.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.MediaType;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.test.web.servlet.MockMvc;
-import pl.rejmanbeata.bakery.database.AddressEntity;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.springframework.http.ResponseEntity;
 import pl.rejmanbeata.bakery.database.ClientEntity;
 import pl.rejmanbeata.bakery.mapper.ClientMapper;
 import pl.rejmanbeata.bakery.model.client.Client;
 import pl.rejmanbeata.bakery.service.ClientService;
 
-import java.util.Random;
+import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.http.HttpStatus.*;
 
-@AutoConfigureMockMvc
-@ExtendWith(SpringExtension.class)
-@ActiveProfiles("test")
-@WebMvcTest({ClientController.class, ClientMapper.class})
 class ClientControllerTest {
-    private static final Random random = new Random();
-    @MockBean
-    private ClientService clientService;
-    @MockBean
+    public static final long CLIENT_ID = 1L;
+    private ClientController clientController;
+    @Mock
     private ClientMapper clientMapper;
-    @Autowired
-    private MockMvc mockMvc;
+    @Mock
+    private ClientService clientService;
+    private AutoCloseable autoCloseable;
+    private ClientEntity clientEntity;
+    private Client client;
 
-    @Test
-    void testGetClientByName() throws Exception {
-        Long clientId = 1L;
-        ClientEntity mockClientEntity = new ClientEntity();
-        Client mockClient = new Client();
-
-        when(clientService.getClientById(clientId)).thenReturn(mockClientEntity);
-        when(clientMapper.clientEntityToClient(mockClientEntity)).thenReturn(mockClient);
-
-        mockMvc.perform(get("/clients/" + clientId))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.name").value(mockClient.getName()))
-                .andExpect(jsonPath("$.lastName").value(mockClient.getLastName()));
-
-        verify(clientService, times(1)).getClientById(clientId);
-        verify(clientMapper, times(1)).clientEntityToClient(mockClientEntity);
+    @BeforeEach
+    public void setUp() {
+        autoCloseable = MockitoAnnotations.openMocks(this);
+        clientController = new ClientController(clientMapper, clientService);
+        clientEntity = new ClientEntity();
+        client = new Client();
     }
 
     @Test
-    void testCreateClient() throws Exception {
-        ClientEntity clientEntity = createClientEntity("Jane", "Doe", createAddressEntity());
-        Client client = new Client();
+    void shouldGetClientById_Found() {
+        when(clientMapper.clientEntityToClient(any())).thenReturn(client);
+        when(clientService.getClientById(any())).thenReturn(client);
 
-        when(clientMapper.clientToClientEntity(client)).thenReturn(clientEntity);
-        when(clientService.save(clientEntity)).thenReturn(client);
+        ResponseEntity<Client> clientById = clientController.getClientById(CLIENT_ID);
 
-        mockMvc.perform(post("/clients")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(asJsonString(client)))
-                .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.name").value(client.getName()))
-                .andExpect(jsonPath("$.lastName").value(client.getLastName()));
+        assertNotNull(clientById.getBody());
+        assertEquals(OK, clientById.getStatusCode());
+    }
+
+    @Test
+    void shouldGetClientById_NotFound() {
+        when(clientMapper.clientEntityToClient(any())).thenReturn(null);
+
+        ResponseEntity<Client> clientById = clientController.getClientById(CLIENT_ID);
+
+        assertNull(clientById.getBody());
+        assertEquals(NOT_FOUND, clientById.getStatusCode());
+    }
+
+    @Test
+    void shouldCreateClient() {
+        when(clientMapper.clientToClientEntity(any())).thenReturn(clientEntity);
+
+        ResponseEntity<Client> response = clientController.createClient(client);
 
         verify(clientMapper, times(1)).clientToClientEntity(client);
         verify(clientService, times(1)).save(clientEntity);
+        assertEquals(CREATED, response.getStatusCode());
+        assertEquals(client, response.getBody());
     }
 
     @Test
-    void testUpdateClient() throws Exception {
-        Long clientId = 1L;
-        ClientEntity updatedClient = createClientEntity("John", "Smith", createAddressEntity());
-        Client client = Client.builder()
-                .name("John")
-                .lastName("Smith")
-                .build();
+    void shouldUpdateClient_Found() {
+        Client updatedClient = new Client();
+        Client savedClient = new Client();
 
-        when(clientMapper.clientToClientEntity(eq(client))).thenReturn(updatedClient);
-        when(clientService.updateClient(clientId, updatedClient)).thenReturn(client);
+        when(clientMapper.clientToClientEntity(updatedClient)).thenReturn(clientEntity);
+        when(clientService.updateClient(CLIENT_ID, clientEntity)).thenReturn(savedClient);
 
-        mockMvc.perform(put("/clients/" + clientId)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(asJsonString(client)))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.name").value(updatedClient.getName()))
-                .andExpect(jsonPath("$.lastName").value(updatedClient.getLastName()));
+        ResponseEntity<Client> response = clientController.updateClient(CLIENT_ID, updatedClient);
 
-        verify(clientMapper, times(1)).clientToClientEntity(client);
-        verify(clientService, times(1)).updateClient(clientId, updatedClient);
+        verify(clientMapper, times(1)).clientToClientEntity(updatedClient);
+        verify(clientService, times(1)).updateClient(CLIENT_ID, clientEntity);
+        assertEquals(OK, response.getStatusCode());
+        assertEquals(savedClient, response.getBody());
     }
 
     @Test
-    void testUpdateClientNotFound() throws Exception {
-        Long clientId = 1L;
-        ClientEntity updatedClient = createClientEntity("John", "Smith", null);
-        Client client = Client.builder()
-                .name("John")
-                .lastName("Smith")
-                .build();
+    void shouldUpdateClient_NotFound() {
+        Client updatedClient = new Client();
 
-        when(clientMapper.clientToClientEntity(client)).thenReturn(updatedClient);
-        when(clientService.updateClient(clientId, updatedClient)).thenReturn(null);
+        when(clientMapper.clientToClientEntity(updatedClient)).thenReturn(clientEntity);
+        when(clientService.updateClient(CLIENT_ID, clientEntity)).thenReturn(null);
 
-        mockMvc.perform(put("/clients/" + clientId)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(asJsonString(updatedClient)))
-                .andExpect(status().isNotFound());
+        ResponseEntity<Client> response = clientController.updateClient(CLIENT_ID, updatedClient);
 
-        verify(clientMapper, times(1)).clientToClientEntity(client);
-        verify(clientService, times(1)).updateClient(clientId, updatedClient);
+        verify(clientMapper, times(1)).clientToClientEntity(updatedClient);
+        verify(clientService, times(1)).updateClient(CLIENT_ID, clientEntity);
+        assertEquals(NOT_FOUND, response.getStatusCode());
+        assertNull(response.getBody());
     }
 
     @Test
-    void testDeleteClient() throws Exception {
-        Long clientId = 1L;
-        ClientEntity existingClient = new ClientEntity();
+    void shouldDeleteClient_Found() {
+        when(clientService.getClientById(CLIENT_ID)).thenReturn(client);
 
-        when(clientService.getClientById(clientId)).thenReturn(existingClient);
-        doNothing().when(clientService).deleteClientById(clientId);
+        ResponseEntity<Void> response = clientController.deleteClient(CLIENT_ID);
 
-        mockMvc.perform(delete("/clients/" + clientId))
-                .andExpect(status().isNoContent());
-
-        verify(clientService, times(1)).getClientById(clientId);
-        verify(clientService, times(1)).deleteClientById(clientId);
+        verify(clientService, times(1)).getClientById(CLIENT_ID);
+        verify(clientService, times(1)).deleteClientById(CLIENT_ID);
+        assertEquals(NO_CONTENT, response.getStatusCode());
+        assertNull(response.getBody());
     }
 
     @Test
-    void testDeleteClientNotFound() throws Exception {
-        Long clientId = 1L;
+    void shouldDeleteClient_NotFound() {
+        when(clientService.getClientById(CLIENT_ID)).thenReturn(null);
 
-        when(clientService.getClientById(clientId)).thenReturn(null);
+        ResponseEntity<Void> response = clientController.deleteClient(CLIENT_ID);
 
-        mockMvc.perform(delete("/clients/" + clientId))
-                .andExpect(status().isNotFound());
-
-        verify(clientService, times(1)).getClientById(clientId);
-        verify(clientService, times(0)).deleteClientById(clientId);
+        verify(clientService, times(1)).getClientById(CLIENT_ID);
+        verify(clientService, never()).deleteClientById(CLIENT_ID);
+        assertEquals(NOT_FOUND, response.getStatusCode());
+        assertNull(response.getBody());
     }
 
+    @Test
+    void shouldGetAllClients() {
+        Client clientEntity1 = new Client();
+        Client clientEntity2 = new Client();
+        List<Client> clients = List.of(clientEntity1, clientEntity2);
 
-    private static AddressEntity createAddressEntity() {
-        return AddressEntity.builder()
-                .longitude(random.nextDouble())
-                .latitude(random.nextDouble())
-                .build();
+        when(clientService.getAllClients()).thenReturn(clients);
+
+        ResponseEntity<List<Client>> response = clientController.getAllClients();
+
+        verify(clientService, times(1)).getAllClients();
+        assertEquals(OK, response.getStatusCode());
+        assertNotNull(response.getBody());
+        assertEquals(clients, response.getBody());
     }
 
-    private static ClientEntity createClientEntity(String name, String lastName, AddressEntity address) {
-        return ClientEntity.builder()
-                .name(name)
-                .lastName(lastName)
-                .address(address)
-                .build();
+    @Test
+    void shouldGetAllClients_EmptyList() {
+        when(clientService.getAllClients()).thenReturn(List.of());
+
+        ResponseEntity<List<Client>> response = clientController.getAllClients();
+
+        verify(clientService, times(1)).getAllClients();
+        verify(clientMapper, never()).clientEntityToClient(any());
+        assertEquals(OK, response.getStatusCode());
+        assertTrue(response.getBody().isEmpty());
     }
 
-    private static String asJsonString(final Object obj) {
-        try {
-            return new ObjectMapper().writeValueAsString(obj);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+    @AfterEach
+    public void tearDown() throws Exception {
+        autoCloseable.close();
     }
 
 }
