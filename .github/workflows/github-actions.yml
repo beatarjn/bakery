@@ -14,9 +14,5 @@ jobs:
           distribution: 'temurin'
       - name: "Gradle permisions"
         run: chmod +x ./gradlew
-      - name: "pwd"
-        run: pwd
-      - name: "ll"
-        run: ls -al
       - name: "Build with Gradle"
         run: ./gradlew build
