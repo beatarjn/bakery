@@ -7,7 +7,6 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 import pl.rejmanbeata.bakery.database.AddressEntity;
 import pl.rejmanbeata.bakery.database.ClientEntity;
-import pl.rejmanbeata.bakery.jpa_repository.ClientRepository;
 import pl.rejmanbeata.bakery.model.client.Client;
 import pl.rejmanbeata.bakery.service.ClientService;
 
@@ -25,8 +24,6 @@ class ClientServiceITest {
     public static final String SMITH = "Smith";
     @Autowired
     private ClientService clientService;
-    @Autowired
-    private ClientRepository clientRepository;
 
     @Test
     void testFindClientById_shouldReturnClient() {
@@ -57,7 +54,7 @@ class ClientServiceITest {
         List<Client> allClients = clientService.getAllClients();
         assertNotNull(allClients);
 
-        clientRepository.save(clientEntity);
+        clientService.save(clientEntity);
 
         List<Client> allClientsAfterSave = clientService.getAllClients();
 

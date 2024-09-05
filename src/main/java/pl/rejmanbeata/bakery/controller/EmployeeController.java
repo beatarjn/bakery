@@ -15,7 +15,7 @@ public class EmployeeController {
     private final List<Employee> employeeList = new ArrayList<>();
 
     @GetMapping("/{name}")
-    public ResponseEntity<Employee> getEmployeeByName(@PathVariable String name) {
+    public ResponseEntity<Employee> getEmployeeByName(@PathVariable("name") String name) {
         Optional<Employee> employee = employeeList.stream()
                 .filter(emp -> emp.getName().equalsIgnoreCase(name))
                 .findFirst();
@@ -32,7 +32,7 @@ public class EmployeeController {
     }
 
     @PutMapping("/{name}")
-    public ResponseEntity<Employee> updateEmployee(@PathVariable String name, @RequestBody Employee updatedEmployee) {
+    public ResponseEntity<Employee> updateEmployee(@PathVariable("name") String name, @RequestBody Employee updatedEmployee) {
         Optional<Employee> existingEmployee = employeeList.stream()
                 .filter(emp -> emp.getName().equalsIgnoreCase(name))
                 .findFirst();
@@ -48,7 +48,7 @@ public class EmployeeController {
     }
 
     @DeleteMapping("/{name}")
-    public ResponseEntity<Void> deleteEmployee(@PathVariable String name) {
+    public ResponseEntity<Void> deleteEmployee(@PathVariable("name") String name) {
         Optional<Employee> existingEmployee = employeeList.stream()
                 .filter(emp -> emp.getName().equalsIgnoreCase(name))
                 .findFirst();

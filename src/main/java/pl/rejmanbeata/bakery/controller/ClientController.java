@@ -28,7 +28,7 @@ public class ClientController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Client> getClientById(@PathVariable Long id) {
+    public ResponseEntity<Client> getClientById(@PathVariable("id") Long id) {
         Client client = clientService.getClientById(id);
         return client == null ? new ResponseEntity<>(HttpStatus.NOT_FOUND) : new ResponseEntity<>(client, OK);
     }
@@ -41,14 +41,14 @@ public class ClientController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Client> updateClient(@PathVariable Long id, @RequestBody Client updatedClient) {
+    public ResponseEntity<Client> updateClient(@PathVariable("id") Long id, @RequestBody Client updatedClient) {
         ClientEntity clientEntity = clientMapper.clientToClientEntity(updatedClient);
         Client savedClient = clientService.updateClient(id, clientEntity);
         return savedClient != null ? new ResponseEntity<>(savedClient, OK) : new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteClient(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteClient(@PathVariable("id") Long id) {
         Client existingClient = clientService.getClientById(id);
         if (existingClient != null) {
             clientService.deleteClientById(id);
