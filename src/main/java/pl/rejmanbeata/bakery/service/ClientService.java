@@ -9,7 +9,6 @@ import pl.rejmanbeata.bakery.model.client.Client;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -30,7 +29,7 @@ public class ClientService {
     }
 
     public Client getClientById(Long id) {
-        return clientMapper.clientEntityToClient(clientRepository.findById(id).orElse(null));
+        return clientMapper.clientEntityToClient(clientRepository.findById(id).get());
     }
 
     public void deleteClientById(Long id) {
