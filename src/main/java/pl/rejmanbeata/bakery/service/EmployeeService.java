@@ -2,7 +2,6 @@ package pl.rejmanbeata.bakery.service;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-import pl.rejmanbeata.bakery.database.EmployeeEntity;
 import pl.rejmanbeata.bakery.jpa_repository.EmployeeRepository;
 import pl.rejmanbeata.bakery.mapper.EmployeeMapper;
 import pl.rejmanbeata.bakery.model.employee.Employee;
@@ -31,7 +30,9 @@ public class EmployeeService {
     }
 
     public Employee getEmployeeById(Long id) {
-        return employeeMapper.employeeEntityToEmployee(employeeRepository.findById(id).get());
+        return employeeRepository.findById(id)
+                .map(employeeMapper::employeeEntityToEmployee)
+                .orElse(null);
     }
 
     public void deleteEmployeeById(Long id) {

@@ -30,6 +30,14 @@ public class TestEntitiesFactory {
                 .build();
     }
 
+    public static EmployeeEntity createEmployeeEntityWithRole(String role) {
+        return EmployeeEntity.builder()
+                .name("John")
+                .lastName("Doe")
+                .role(role)
+                .build();
+    }
+
     public static ProductEntity createProductEntity(String name, Double price) {
         return ProductEntity.builder()
                 .price(price)

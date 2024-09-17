@@ -1,6 +1,5 @@
-package pl.rejmanbeata.bakery.controller;
+package pl.rejmanbeata.bakery.controller.client;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +10,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
-import pl.rejmanbeata.bakery.database.AddressEntity;
+import pl.rejmanbeata.bakery.controller.ClientController;
 import pl.rejmanbeata.bakery.database.ClientEntity;
 import pl.rejmanbeata.bakery.mapper.ClientMapper;
 import pl.rejmanbeata.bakery.model.client.Client;
@@ -23,6 +22,9 @@ import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static pl.rejmanbeata.bakery.TestEntitiesFactory.createAddressEntity;
+import static pl.rejmanbeata.bakery.TestEntitiesFactory.createClientEntity;
+import static pl.rejmanbeata.bakery.controller.TestMapper.asJsonString;
 
 @AutoConfigureMockMvc
 @ExtendWith(SpringExtension.class)
@@ -146,29 +148,4 @@ class ClientControllerITest {
         verify(clientService, times(1)).getClientById(clientId);
         verify(clientService, times(0)).deleteClientById(clientId);
     }
-
-
-    private static AddressEntity createAddressEntity() {
-        return AddressEntity.builder()
-                .longitude(random.nextDouble())
-                .latitude(random.nextDouble())
-                .build();
-    }
-
-    private static ClientEntity createClientEntity(String name, String lastName, AddressEntity address) {
-        return ClientEntity.builder()
-                .name(name)
-                .lastName(lastName)
-                .address(address)
-                .build();
-    }
-
-    private static String asJsonString(final Object obj) {
-        try {
-            return new ObjectMapper().writeValueAsString(obj);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-
 }

@@ -29,7 +29,9 @@ public class ClientService {
     }
 
     public Client getClientById(Long id) {
-        return clientMapper.clientEntityToClient(clientRepository.findById(id).get());
+        return clientRepository.findById(id)
+                .map(clientMapper::clientEntityToClient)
+                .orElse(null);
     }
 
     public void deleteClientById(Long id) {

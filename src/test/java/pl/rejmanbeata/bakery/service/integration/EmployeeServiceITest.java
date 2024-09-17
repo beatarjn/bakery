@@ -8,9 +8,8 @@ import org.springframework.transaction.annotation.Transactional;
 import pl.rejmanbeata.bakery.database.AddressEntity;
 import pl.rejmanbeata.bakery.database.EmployeeEntity;
 import pl.rejmanbeata.bakery.jpa_repository.EmployeeRepository;
+import pl.rejmanbeata.bakery.model.employee.Employee;
 import pl.rejmanbeata.bakery.service.EmployeeService;
-
-import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
@@ -20,6 +19,10 @@ import static pl.rejmanbeata.bakery.TestEntitiesFactory.createEmployeeEntityWith
 @Transactional
 @ActiveProfiles("test")
 class EmployeeServiceITest {
+    public static final long ID = 1L;
+    public static final String MANAGER = "Manager";
+    public static final String JOHN = "John";
+    public static final String DOE = "Doe";
     @Autowired
     private EmployeeService employeeService;
     @Autowired
@@ -27,21 +30,21 @@ class EmployeeServiceITest {
 
     @Test
     void testFindEmployeeById_shouldReturnEmployee() {
-        EmployeeEntity foundEmployee = employeeService.getEmployeeById(1L);
+        var foundEmployee = employeeService.getEmployeeById(ID);
 
         assertNotNull(foundEmployee);
     }
 
     @Test
     void testFindEmployeeById_shouldReturnNull() {
-        EmployeeEntity foundEmployee = employeeService.getEmployeeById(8L);
+        var foundEmployee = employeeService.getEmployeeById(8L);
 
         assertNull(foundEmployee);
     }
 
     @Test
     void testGetAllEmployees_shouldFindAll() {
-        List<EmployeeEntity> allEmployees = employeeService.getAllEmployees();
+        var allEmployees = employeeService.getAllEmployees();
 
         assertNotNull(allEmployees);
         assertEquals(2, allEmployees.size());
@@ -49,30 +52,34 @@ class EmployeeServiceITest {
 
     @Test
     void testSave_shouldSaveEmployee() {
-        EmployeeEntity employeeEntity = createEmployeeEntityWithRoleAndAddress("Manager", new AddressEntity());
+        EmployeeEntity employeeEntity = createEmployeeEntityWithRoleAndAddress(MANAGER, new AddressEntity());
 
-        List<EmployeeEntity> allEmployees = employeeService.getAllEmployees();
+        var allEmployees = employeeService.getAllEmployees();
         assertNotNull(allEmployees);
 
         employeeRepository.save(employeeEntity);
 
-        List<EmployeeEntity> allEmployeesAfterSave = employeeService.getAllEmployees();
+        var allEmployeesAfterSave = employeeService.getAllEmployees();
 
         assertThat(allEmployeesAfterSave).hasSize(allEmployees.size() + 1);
     }
 
     @Test
     void testDeleteById_shouldDeleteEmployee() {
-        EmployeeEntity employeeEntity = createEmployeeEntityWithRoleAndAddress("Manager", new AddressEntity());
-        employeeService.save(employeeEntity);
-        List<EmployeeEntity> allEmployees = employeeService.getAllEmployees();
+        var employee = Employee.builder()
+                .lastName(DOE)
+                .name(JOHN)
+                .role("Manager")
+                .build();
+        employeeService.save(employee);
+        var allEmployees = employeeService.getAllEmployees();
         assertNotNull(allEmployees);
 
-        employeeService.deleteEmployeeById(employeeEntity.getId());
+        employeeService.deleteEmployeeById(ID);
 
-        List<EmployeeEntity> allEmployeesAfterDelete = employeeService.getAllEmployees();
+        var allEmployeesAfterDelete = employeeService.getAllEmployees();
 
         assertThat(allEmployeesAfterDelete).hasSize(allEmployees.size() - 1);
-        assertNull(employeeService.getEmployeeById(employeeEntity.getId()));
+        assertNull(employeeService.getEmployeeById(ID));
     }
 }
