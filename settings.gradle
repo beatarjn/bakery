@@ -1,2 +1,4 @@
 rootProject.name = 'bakery'
 include 'bakery_service'
+include 'bread_store'
+
