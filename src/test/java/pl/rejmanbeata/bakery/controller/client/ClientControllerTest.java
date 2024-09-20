@@ -1,4 +1,4 @@
-package pl.rejmanbeata.bakery.controller;
+package pl.rejmanbeata.bakery.controller.client;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.http.ResponseEntity;
+import pl.rejmanbeata.bakery.controller.ClientController;
 import pl.rejmanbeata.bakery.database.ClientEntity;
 import pl.rejmanbeata.bakery.mapper.ClientMapper;
 import pl.rejmanbeata.bakery.model.client.Client;

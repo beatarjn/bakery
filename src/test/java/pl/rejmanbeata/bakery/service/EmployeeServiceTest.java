@@ -1,14 +1,17 @@
 package pl.rejmanbeata.bakery.service;
 
+import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 import pl.rejmanbeata.bakery.database.AddressEntity;
 import pl.rejmanbeata.bakery.database.EmployeeEntity;
 import pl.rejmanbeata.bakery.jpa_repository.EmployeeRepository;
+import pl.rejmanbeata.bakery.mapper.EmployeeMapper;
+import pl.rejmanbeata.bakery.model.employee.Employee;
 
 import java.util.Collections;
 import java.util.List;
@@ -16,53 +19,65 @@ import java.util.Optional;
 import java.util.Random;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.willDoNothing;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
+@Transactional
 class EmployeeServiceTest {
-
+    public static final String JOHN = "John";
+    public static final String DOE = "Doe";
+    public static final long ID = 1L;
     @Mock
     private EmployeeRepository employeeRepository;
-    @InjectMocks
     private EmployeeService employeeService;
-    private EmployeeEntity employee;
-    private Random random = new Random();
+    private EmployeeEntity employeeEntity;
+    private Employee employee;
+    private final Random random = new Random();
+    @Mock
+    private EmployeeMapper employeeMapper;
 
     @BeforeEach
     public void setup() {
-        employee = EmployeeEntity.builder()
-                .id(1L)
-                .lastName("Doe")
-                .address(new AddressEntity(1L, random.nextDouble(), random.nextDouble()))
-                .name("John")
+        MockitoAnnotations.openMocks(this);
+        employee = Employee.builder()
+                .lastName(DOE)
+                .name(JOHN)
                 .role("Manager")
+                .build();
+        employeeService = new EmployeeService(employeeRepository, employeeMapper);
+        employeeEntity = EmployeeEntity.builder()
+                .lastName(DOE)
+                .address(new AddressEntity(ID, random.nextDouble(), random.nextDouble()))
+                .name(JOHN)
                 .build();
     }
 
     @Test
     void testSave_shouldSaveAndReturnEmployee() {
-        given(employeeRepository.save(employee)).willReturn(employee);
+        when(employeeMapper.employeeToEmployeeEntity(any())).thenReturn(employeeEntity);
+        when(employeeRepository.save(any())).thenReturn(employeeEntity);
+        when(employeeMapper.employeeEntityToEmployee(any())).thenReturn(employee);
 
-        EmployeeEntity savedEmployee = employeeService.save(employee);
+        var savedEmployee = employeeService.save(employee);
 
         assertThat(savedEmployee).isNotNull();
+        verify(employeeRepository, times(1)).save(employeeEntity);
     }
 
     @Test
     void testGetAllEmployees_shouldReturnAllEmployees() {
-        EmployeeEntity employee2 = EmployeeEntity.builder()
-                .id(2L)
+        var id = 2L;
+        var employee2 = EmployeeEntity.builder()
+                .id(id)
                 .lastName("Smith")
-                .address(new AddressEntity(2L, random.nextDouble(), random.nextDouble()))
+                .address(new AddressEntity(id, random.nextDouble(), random.nextDouble()))
                 .name("Anna")
                 .build();
 
-        given(employeeRepository.findAll()).willReturn(List.of(employee, employee2));
+        when(employeeRepository.findAll()).thenReturn(List.of(employeeEntity, employee2));
 
-        List<EmployeeEntity> employees = employeeService.getAllEmployees();
+        var employees = employeeService.getAllEmployees();
 
         assertThat(employees)
                 .isNotNull()
@@ -71,30 +86,29 @@ class EmployeeServiceTest {
 
     @Test
     void testGetAllEmployees_shouldReturnEmptyList() {
-        given(employeeRepository.findAll()).willReturn(Collections.emptyList());
+        when(employeeRepository.findAll()).thenReturn(Collections.emptyList());
 
-        List<EmployeeEntity> employees = employeeService.getAllEmployees();
+        var employees = employeeService.getAllEmployees();
 
         assertThat(employees).isEmpty();
     }
 
     @Test
     void testGetEmployeeById_shouldReturnEmployeeById() {
-        given(employeeRepository.findById(1L)).willReturn(Optional.of(employee));
+        when(employeeMapper.employeeEntityToEmployee(any())).thenReturn(employee);
+        when(employeeRepository.findById(any())).thenReturn(Optional.of(employeeEntity));
 
-        EmployeeEntity savedEmployee = employeeService.getEmployeeById(employee.getId());
+        var savedEmployee = employeeService.getEmployeeById(employeeEntity.getId());
 
         assertThat(savedEmployee).isNotNull();
     }
 
     @Test
     void testDelete_shouldDeleteEmployeeById() {
-        long employeeId = 1L;
+        willDoNothing().given(employeeRepository).deleteById(ID);
 
-        willDoNothing().given(employeeRepository).deleteById(employeeId);
+        employeeService.deleteEmployeeById(ID);
 
-        employeeService.deleteEmployeeById(employeeId);
-
-        verify(employeeRepository, times(1)).deleteById(employeeId);
+        verify(employeeRepository, times(1)).deleteById(ID);
     }
 }
