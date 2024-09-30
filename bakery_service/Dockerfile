@@ -4,7 +4,7 @@ COPY build/libs/*.jar /bakery/bakery_service-0.0.1-SNAPSHOT.jar
 
 WORKDIR /bakery
 
-#ENV DATABASE_HOST bakerydb
+ENV DATABASE_HOST localhost
 ENV DATABASE_PORT 5555
 ENV DATABASE_USERNAME x
 ENV DATABASE_PASSWORD x
