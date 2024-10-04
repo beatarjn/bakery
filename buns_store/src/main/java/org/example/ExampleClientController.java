@@ -4,12 +4,12 @@ import okhttp3.Call;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 
 import java.io.IOException;
+import org.springframework.web.bind.annotation.RestController;
 
-@Controller
+@RestController
 public class ExampleClientController {
 
     private OkHttpClient client = new OkHttpClient();
@@ -17,7 +17,7 @@ public class ExampleClientController {
     @GetMapping("/sendHello")
     public void runHello() throws IOException {
         Request request = new Request.Builder()
-                .url("http://localhost:8010/hello")
+                .url("http://localhost:8080/hello")
                 .build();
 
         try (Response response = client.newCall(request).execute()) {
