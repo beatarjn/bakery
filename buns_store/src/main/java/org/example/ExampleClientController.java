@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
-import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class ExampleClientController {
@@ -17,7 +16,7 @@ public class ExampleClientController {
     @GetMapping("/sendHello")
     public String runHello() throws IOException {
         Request request = new Request.Builder()
-                .url("http://localhost:8080/hello")
+                .url("http://localhost:8010/hello")
                 .build();
 
         try (Response response = client.newCall(request).execute()) {
