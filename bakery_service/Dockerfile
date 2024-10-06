@@ -1,9 +1,12 @@
-FROM openjdk:21-jdk
+FROM eclipse-temurin:21-jdk-jammy
 
 WORKDIR /bakery
 
-COPY build/libs/*.jar /bakery/bakery_service.jar
+COPY ../gradle .
+COPY ../build.gradle .
+COPY ../gradlew .
+COPY ../settings.gradle .
 
-ENV SPRING_PROFILES_ACTIVE=docker
+RUN chmod +x ./gradlew
 
-CMD ["java", "-jar", "bakery_service.jar"]
+RUN ./gradlew bakery_service:bootJar

@@ -6,7 +6,7 @@ Run this in terminal: </br>
 
 ## bakery_service
 Run this in terminal: </br>
-1. `docker build -t bakery_service . ` </br>
+1. `docker build -f bakery_service/Dockerfile -t bakery_service . ` </br>
 2. `docker run -d -e DATABASE_HOST=host.docker.internal -e DATABASE_PORT=5555 -e DATABASE_NAME=bakerydb -e DATABASE_PASSWORD=<> 
 -e DATABASE_USERNAME=<> -i --name bakery-service -p 8080:8080 bakery-service `
 
