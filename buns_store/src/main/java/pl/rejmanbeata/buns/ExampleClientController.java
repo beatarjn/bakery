@@ -1,4 +1,4 @@
-package org.example;
+package pl.rejmanbeata.buns;
 
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
