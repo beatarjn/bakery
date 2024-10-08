@@ -13,9 +13,9 @@ import org.springframework.test.context.ActiveProfiles;
 
 import java.io.IOException;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
-import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
+import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @WireMockTest(httpPort = 8020)
 @SpringBootTest
@@ -49,7 +49,8 @@ class ExampleClientControllerTest {
         try (Response response = client.newCall(request).execute()) {
             String actualResponse = response.body().string();
 
-            assertThat(actualResponse).isEqualTo(expectedResponse);
+            assertEquals(expectedResponse, actualResponse);
+            verify(getRequestedFor(urlEqualTo(SEND_HELLO)));
         }
     }
 }
