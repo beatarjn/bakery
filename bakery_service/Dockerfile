@@ -2,12 +2,11 @@ FROM eclipse-temurin:21-jdk-jammy
 
 WORKDIR /bakery
 
-COPY ../gradle .
-COPY ../gradle/wrapper .
+COPY ../gradle/wrapper/* gradle/wrapper/
 COPY ../build.gradle .
 COPY ../gradlew .
 COPY ../settings.gradle .
-COPY bakery_service .
+COPY . .
 
 
 RUN chmod +x ./gradlew
