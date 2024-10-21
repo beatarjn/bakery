@@ -9,9 +9,7 @@ COPY ../settings.gradle .
 COPY . .
 
 
-RUN chmod +x ./gradlew
-
-RUN ./gradlew bakery_service:bootJar --no-daemon --stacktrace --info
+RUN chmod +x ./gradlew && ./gradlew bakery_service:bootJar --no-daemon
 
 ENV SPRING_PROFILES_ACTIVE=docker
 
