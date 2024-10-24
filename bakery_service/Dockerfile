@@ -6,7 +6,7 @@ COPY ../gradle/wrapper/* gradle/wrapper/
 COPY ../build.gradle .
 COPY ../gradlew .
 COPY ../settings.gradle .
-COPY . .
+COPY bakery_service bakery_service
 
 
 RUN chmod +x ./gradlew && ./gradlew bakery_service:bootJar --no-daemon

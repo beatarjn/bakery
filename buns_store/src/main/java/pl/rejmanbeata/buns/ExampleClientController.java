@@ -22,7 +22,7 @@ public class ExampleClientController {
     @GetMapping("/sendHello")
     public String runHello() throws IOException {
         Request request = new Request.Builder()
-                .url(bakeryUrl + bakeryPort + SEND_HELLO)
+                .url("https://host.docker.internal:8010/hello")
                 .build();
 
         try (Response response = client.newCall(request).execute()) {
