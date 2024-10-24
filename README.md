@@ -8,12 +8,12 @@ Run this in terminal: </br>
 Run this in terminal: </br>
 1. `docker build -f bakery_service/Dockerfile -t bakery_service .` </br>
 2. `docker run -d -e DATABASE_HOST=host.docker.internal -e DATABASE_PORT=5555 -e DATABASE_NAME=bakerydb -e DATABASE_PASSWORD=<> 
--e DATABASE_USERNAME=<> -i --name bakery-service -p 8080:8080 bakery-service 
+-e DATABASE_USERNAME=<> -i --name bakery_service -p 8010:8010 bakery_service`
 
 ## buns_store
 Run this in terminal: </br>
 1. `docker build -f buns_store/Dockerfile -t buns_store .`  </br>
-2. `docker run -d -i --name buns_store -p 8060:8070 buns_store`
+2. `docker run -d -i --name buns_store -p 8020:8020 buns_store`
 
 
 
