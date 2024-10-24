@@ -6,11 +6,10 @@ COPY ../gradle/wrapper/* gradle/wrapper/
 COPY ../build.gradle .
 COPY ../gradlew .
 COPY ../settings.gradle .
-COPY bakery_service bakery_service
+COPY buns_store buns_store
 
-
-RUN chmod +x ./gradlew && ./gradlew bakery_service:bootJar --no-daemon
+RUN chmod +x ./gradlew && ./gradlew buns_store:bootJar --no-daemon
 
 ENV SPRING_PROFILES_ACTIVE=docker
 
-CMD ["java", "-jar", "bakery_service/build/libs/bakery_service-0.0.1-SNAPSHOT.jar"]
+CMD ["java", "-jar", "buns_store/build/libs/buns_store-0.0.1-SNAPSHOT.jar"]
