@@ -1,0 +1,8 @@
+services:
+  buns_service:
+    container_name: buns_store
+    build:
+      context: ../
+      dockerfile: infrastructure/buns_store/service/Dockerfile
+    ports:
+      - 8070:8020
