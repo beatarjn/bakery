@@ -6,3 +6,14 @@ services:
       dockerfile: infrastructure/buns_store/service/Dockerfile
     ports:
       - 8070:8020
+
+  bakery_db:
+    container_name: bakery_db
+    build:
+      context: ./bakery_service/database
+      dockerfile: Dockerfile
+    ports:
+      - 5555:5432
+    environment:
+      - POSTGRES_PASSWORD=foo
+      - POSTGRES_USER=bar
