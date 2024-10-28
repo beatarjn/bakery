@@ -21,3 +21,5 @@ Run this in terminal: </br>
 # How to run applications using Docker compose
 Run this in terminal: </br> 
 1. `docker-compose up -d`  </br>
+
+You can verify that the applications are working fine by calling: http://localhost:8020/sendHello and getting 'Hello world' response
