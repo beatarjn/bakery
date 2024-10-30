@@ -5,7 +5,7 @@ services:
       context: ../
       dockerfile: infrastructure/buns_store/service/Dockerfile
     ports:
-      - 8020:8020
+      - 8060:8020
 
   bakery_db:
     container_name: bakery_db
@@ -24,7 +24,7 @@ services:
       context: ../
       dockerfile: infrastructure/bakery_service/service/Dockerfile
     ports:
-      - 8010:8010
+      - 8070:8010
     environment:
       - DATABASE_PORT=5555
       - DATABASE_NAME=bakerydb
