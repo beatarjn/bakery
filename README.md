@@ -10,12 +10,12 @@ Run this in terminal: </br>
 Run this in terminal: </br>
 1. `docker build -f bakery_service/service/Dockerfile -t bakery_service .. ` </br>
 2. `docker run -d -e DATABASE_HOST=host.docker.internal -e DATABASE_PORT=5555 -e DATABASE_NAME=bakerydb -e DATABASE_PASSWORD=<>
--e DATABASE_USERNAME=<> -i --name bakery_service -p 8070:8010 bakery_service`
+-e DATABASE_USERNAME=<> -i --name bakery_service -p 8070:8010 bakery`
 
 ## buns_store
 Run this in terminal: </br>
 1. `docker build -f buns_store/service/Dockerfile -t buns_store ..`  </br>
-2. `docker run -d -i --name buns_store -p 8060:8020 buns_store`
+2. `docker run -d -i --name buns_store -p 8060:8020 buns`
 
 
 # How to run applications using Docker compose

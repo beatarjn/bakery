@@ -1,5 +1,5 @@
 services:
-  buns_service:
+  buns:
     container_name: buns_store
     build:
       context: ../
@@ -18,7 +18,7 @@ services:
       - POSTGRES_PASSWORD=foo
       - POSTGRES_USER=bar
 
-  bakery_service:
+  bakery:
     container_name: bakery_service
     build:
       context: ../
