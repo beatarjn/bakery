@@ -2,10 +2,10 @@ FROM eclipse-temurin:21-jdk-jammy
 
 WORKDIR /bakery
 
-COPY ../gradle/wrapper/* gradle/wrapper/
-COPY ../build.gradle .
-COPY ../gradlew .
-COPY ../settings.gradle .
+COPY gradle/wrapper/* gradle/wrapper/
+COPY build.gradle .
+COPY gradlew .
+COPY settings.gradle .
 COPY buns_store buns_store
 
 RUN chmod +x ./gradlew && ./gradlew buns_store:bootJar --no-daemon

@@ -2,10 +2,10 @@ FROM eclipse-temurin:21-jdk-jammy
 
 WORKDIR /bakery
 
-COPY ../gradle/wrapper/* gradle/wrapper/
-COPY ../build.gradle .
-COPY ../gradlew .
-COPY ../settings.gradle .
+COPY gradle/wrapper/* gradle/wrapper/
+COPY build.gradle .
+COPY gradlew .
+COPY settings.gradle .
 COPY bakery_service bakery_service
 
 

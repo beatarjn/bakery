@@ -1,0 +1,35 @@
+services:
+  buns:
+    container_name: buns_store
+    build:
+      context: ../
+      dockerfile: infrastructure/buns_store/service/Dockerfile
+    ports:
+      - 8060:8020
+
+  bakery_db:
+    container_name: bakery_db
+    build:
+      context: ./bakery_service/database
+      dockerfile: Dockerfile
+    ports:
+      - 5555:5432
+    environment:
+      - POSTGRES_PASSWORD=foo
+      - POSTGRES_USER=bar
+
+  bakery:
+    container_name: bakery_service
+    build:
+      context: ../
+      dockerfile: infrastructure/bakery_service/service/Dockerfile
+    ports:
+      - 8070:8010
+    environment:
+      - DATABASE_PORT=5555
+      - DATABASE_NAME=bakerydb
+      - DATABASE_PASSWORD=foo
+      - DATABASE_USERNAME=bar
+      - DATABASE_HOST=host.docker.internal
+    depends_on:
+      - bakery_db
