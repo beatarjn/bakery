@@ -14,13 +14,12 @@ import org.springframework.test.context.ActiveProfiles;
 import java.io.IOException;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @WireMockTest(httpPort = 8020)
 @SpringBootTest
 @ActiveProfiles("test")
-class ExampleClientControllerTest {
+class BunsControllerTest {
     private OkHttpClient client;
 
     @Value("${buns.url}")
