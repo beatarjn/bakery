@@ -32,5 +32,5 @@ class BreadControllerTest {
                 """))
         .andExpect(status().isOk());
   }
-  
+
 }

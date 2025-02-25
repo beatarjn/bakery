@@ -1,5 +1,7 @@
 package pl.rejmanbeata.bakery.controller;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -11,8 +13,9 @@ import pl.rejmanbeata.bakery.model.bread.Bread;
 public class BreadController {
 
     @PostMapping
-    public void acceptBread(@RequestBody Bread bread){
-        System.out.println("Bread: " + bread);
+    public ResponseEntity<String> acceptBread(@RequestBody Bread bread){
+        System.out.println(bread);
+        return new ResponseEntity<>("bread", HttpStatus.OK);
     }
 
 
