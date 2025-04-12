@@ -10,7 +10,7 @@ import static org.springframework.http.HttpStatus.OK;
 @Slf4j
 @RestController
 @RequestMapping("/v1")
-public class BakeryController {
+public class BunsController {
 
     @GetMapping("/hello")
     public ResponseEntity<String> getHello() {
