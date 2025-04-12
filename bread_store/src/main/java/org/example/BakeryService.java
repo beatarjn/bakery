@@ -16,4 +16,9 @@ public class BakeryService {
         System.out.println("Connect to bakery");
         return feignClient.getBakery();
     }
+
+    public String acceptBread(Bread request) {
+        System.out.println("accept bread in bakery service");
+        return feignClient.acceptBread(request);
+    }
 }
