@@ -1,7 +1,9 @@
 package org.example;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
+@Slf4j
 @RestController
 @RequestMapping("/trigger")
 public class TriggerController {
@@ -19,7 +21,7 @@ public class TriggerController {
 
     @PostMapping("/post")
     public String postBread(@RequestBody Bread bread) {
-        System.out.println("trigger post");
+        log.info("trigger post");
         return bakeryService.acceptBread(bread);
     }
 }
