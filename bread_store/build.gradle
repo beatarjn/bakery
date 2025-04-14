@@ -15,6 +15,7 @@ configurations {
     compileOnly {
         extendsFrom annotationProcessor
     }
+
 }
 
 repositories {
@@ -35,8 +36,9 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok'
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    testImplementation (platform('org.junit:junit-bom:5.10.2'))
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.10.2'
+    testImplementation platform('org.junit:junit-bom:5.11.4')
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.11.4'
+    testImplementation 'org.junit.jupiter:junit-jupiter'
 //    testImplementation 'com.h2database:h2:2.2.224'
 }
 
