@@ -12,7 +12,7 @@ public class KafkaProducerService {
     @Autowired
     private KafkaTemplate<String, String> kafkaTemplate;
 
-    private String topicName = "Kasa1";
+    private String topicName = "Topic1";
 
 
     public void sendMessage(String message, String key) {

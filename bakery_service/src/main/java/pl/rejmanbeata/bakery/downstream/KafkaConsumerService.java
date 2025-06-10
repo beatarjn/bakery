@@ -19,7 +19,7 @@ public class KafkaConsumerService {
 
     @KafkaListener(
             topicPartitions = @TopicPartition(
-                    topic = "Kasa1",
+                    topic = "Topic1",
                     partitionOffsets = {
                             @PartitionOffset(partition = "0", initialOffset = "3"),
                             @PartitionOffset(partition = "3", initialOffset = "3")}))
@@ -34,7 +34,7 @@ public class KafkaConsumerService {
 
     @KafkaListener(
             topicPartitions = @TopicPartition(
-                    topic = "Kasa1",
+                    topic = "Topic1",
                     partitionOffsets = {
                             @PartitionOffset(partition = "1", initialOffset = "0"),
                             @PartitionOffset(partition = "2", initialOffset = "0")})
