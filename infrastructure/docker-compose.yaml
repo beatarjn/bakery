@@ -46,8 +46,14 @@ services:
       - '9092'
       - '29092'
       - '9094'
+    healthcheck:
+      test: "bash -c 'printf \"\" > /dev/tcp/127.0.0.1/9092; exit $$?;'"
+      interval: 5s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
     environment:
-      # KRaft settings
+      # Kraft settings
       - KAFKA_CFG_NODE_ID=0
       - KAFKA_CFG_PROCESS_ROLES=controller,broker
       - KAFKA_CFG_CONTROLLER_QUORUM_VOTERS=0@kafka0:9093,1@kafka1:9093,2@kafka2:9093
@@ -77,7 +83,7 @@ services:
       - '9095'
       - '29092'
     environment:
-      # KRaft settings
+      # Kraft settings
       - KAFKA_CFG_NODE_ID=1
       - KAFKA_CFG_PROCESS_ROLES=controller,broker
       - KAFKA_CFG_CONTROLLER_QUORUM_VOTERS=0@kafka0:9093,1@kafka1:9093,2@kafka2:9093
@@ -107,7 +113,7 @@ services:
       - '29092'
       - '9096'
     environment:
-      # KRaft settings
+      # Kraft settings
       - KAFKA_CFG_NODE_ID=2
       - KAFKA_CFG_PROCESS_ROLES=controller,broker
       - KAFKA_CFG_CONTROLLER_QUORUM_VOTERS=0@kafka0:9093,1@kafka1:9093,2@kafka2:9093
@@ -139,15 +145,29 @@ services:
       kafka-topics.sh --bootstrap-server kafka0:29092 --list
       
       echo -e 'Creating kafka topics'
-      kafka-topics.sh --bootstrap-server kafka0:29092 --create --if-not-exists --topic Kasa1 --replication-factor 1 --partitions 4
+      kafka-topics.sh --bootstrap-server kafka0:29092 --create --if-not-exists --topic Topic1 --replication-factor 1 --partitions 4
       echo -e 'Creating kafka topics'
-      kafka-topics.sh --bootstrap-server kafka0:29092 --create --if-not-exists --topic Kasa2 --replication-factor 1 --partitions 4
+      kafka-topics.sh --bootstrap-server kafka0:29092 --create --if-not-exists --topic Topic2 --replication-factor 1 --partitions 4
       
       echo -e 'Successfully created the following topics:'
       kafka-topics.sh --bootstrap-server kafka0:29092 --describe
       echo -e 'The end.'
       
       "
+
+  kafka-ui:
+    image: provectuslabs/kafka-ui:latest
+    container_name: kafka_ui
+    ports:
+      - "8080:8080"
+    depends_on:
+      - kafka0
+      - kafka1
+      - kafka2
+    environment:
+      - KAFKA_CLUSTERS_0_NAME=pop-cluster
+      - KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS=kafka0:29092,kafka1:29092,kafka2:29092
+
 volumes:
   kafka0_data:
     driver: local
@@ -155,3 +175,4 @@ volumes:
     driver: local
   kafka2_data:
     driver: local
+
